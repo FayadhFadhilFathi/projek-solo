@@ -9,7 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'stock'];
+    // Tambahkan semua kolom yang bisa diisi dari form
+    protected $fillable = ['name', 'description', 'price', 'stock', 'image'];
 
     public function orderItems()
     {
