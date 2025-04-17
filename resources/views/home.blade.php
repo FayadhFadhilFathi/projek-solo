@@ -89,7 +89,7 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Project Store</h1>
+        <h1>Welcome to FayyadhFathi pro</h1>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
