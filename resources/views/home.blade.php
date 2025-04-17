@@ -89,15 +89,16 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to Project Store</h1>
+        <h1>Welcome to Fayyadh Fathi pro</h1>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
+            <li><a href="/">Home</a></li>
                 <li><a href="/products">Products</a></li>
                 <li><a href="/cart">Cart</a></li>
                 <li><a href="/checkout">Checkout</a></li>
                 <li><a href="/login">Login</a></li> <!-- Tambahkan link Login -->
                 <li><a href="/register">Register</a></li> <!-- Tambahkan link Register -->
+
             </ul>
         </nav>
     </header>
@@ -112,4 +113,8 @@
         <p>&copy; 2025 Your Store. All Rights Reserved.</p>
     </footer>
 </body>
+
 </html>
+
+
+
