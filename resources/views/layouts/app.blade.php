@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Utama</title>
+    <title>@yield('title', 'My App')</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         body {
             margin: 0;
@@ -20,6 +21,9 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         header h1 {
@@ -45,7 +49,7 @@
             font-weight: bold;
             padding: 8px 15px;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         nav ul li a:hover {
@@ -55,25 +59,7 @@
 
         main {
             padding: 30px;
-            text-align: center;
-        }
-
-        .cta-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 15px 30px;
-            background-color: #504B38;
-            color: #F8F3D9;
-            font-size: 1.2em;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-        }
-
-        .cta-button:hover {
-            background-color: #B9B28A;
+            min-height: calc(100vh - 120px); /* Agar konten tidak tumpang tindih dengan header/footer */
         }
 
         footer {
@@ -81,31 +67,25 @@
             color: #F8F3D9;
             text-align: center;
             padding: 15px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Welcome to Project Store</h1>
+        <h1>Project Store</h1>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/products">Products</a></li>
-                <li><a href="/cart">Cart</a></li>
-                <li><a href="/checkout">Checkout</a></li>
-                <li><a href="/login">Login</a></li> <!-- Tambahkan link Login -->
-                <li><a href="/register">Register</a></li> <!-- Tambahkan link Register -->
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ route('products') }}">Products</a></li>
+                <li><a href="{{ route('order-items.index') }}">Order Items</a></li>
+                <li><a href="{{ route('login') }}">Login</a></li>
+                <li><a href="{{ route('register') }}">Register</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h2>Your One-Stop Shop for All Your Needs</h2>
-        <p>Explore a wide variety of products and enjoy seamless transactions!</p>
-        <a href="/products" class="cta-button">Shop Now</a>
+        @yield('content')
     </main>
 
     <footer>
