@@ -59,13 +59,13 @@
     </style>
 
     <div class="product-container">
-        @foreach($games as $game)
-            <div class="product-card">
-                <img src="{{ $game['image'] }}" alt="Game Image">
-                <h3>{{ $game['name'] }}</h3>
-                <p>{{ $game['description'] }}</p>
-                <button>Choose</button>
-            </div>
-        @endforeach
+        @foreach($products as $product)
+        <div class="product-card">
+        <img src="{{ $product->image }}" alt="Product Image">
+        <h3>{{ $product->name }}</h3>
+        <p>{{ $product->description }}</p>
+        <button>Choose</button>
+    </div>
+    @endforeach
     </div>
 @endsection

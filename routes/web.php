@@ -12,6 +12,7 @@ Route::get('/', function () {
 // Rute untuk produk (menggunakan resource untuk CRUD)
 Route::resource('products', ProductController::class);
 
+
 // Tambahkan route resource untuk OrderItem
 Route::resource('order-items', OrderItemController::class);
 

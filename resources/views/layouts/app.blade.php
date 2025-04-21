@@ -76,7 +76,7 @@
         <nav>
             <ul>
                 <li><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ route('products') }}">Products</a></li>
+                <li><a href="{{ route('products.index') }}">Products</a></li>
                 <li><a href="{{ route('order-items.index') }}">Order Items</a></li>
                 <li><a href="{{ route('login') }}">Login</a></li>
                 <li><a href="{{ route('register') }}">Register</a></li>
