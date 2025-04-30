@@ -74,14 +74,29 @@
     <header>
         <h1>Project Store</h1>
         <nav>
-            <ul>
-                <li><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ route('products.index') }}">Products</a></li>
-                <li><a href="{{ route('order-items.index') }}">Order Items</a></li>
-                <li><a href="{{ route('login') }}">Login</a></li>
-                <li><a href="{{ route('register') }}">Register</a></li>
-            </ul>
-        </nav>
+    <ul>
+        <li><a href="{{ url('/') }}">Home</a></li>
+        <li><a href="{{ route('products.index') }}">Products</a></li>
+        <li><a href="{{ route('order-items.index') }}">Order Items</a></li>
+
+        @auth
+            <li>Hi, {{ auth()->user()->name }}</li>
+            <li>
+    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+        @csrf
+        <button type="submit" style="background: none; border: none; color: #F8F3D9; font-weight: bold; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+</li>
+
+        @else
+            <li><a href="{{ route('login') }}">Login</a></li>
+            <li><a href="{{ route('register') }}">Register</a></li>
+        @endauth
+    </ul>
+</nav>
+
     </header>
 
     <main>

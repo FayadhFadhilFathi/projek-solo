@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        // Hanya admin yang bisa mengakses create, store, edit, update, destroy
+        $this->middleware('admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
+        $this->middleware('auth'); // Semua rute hanya bisa diakses oleh user yang login
+    }
+
     public function index()
     {
-        $products = Product::all(); // Mengambil semua data produk dari database
+        $products = Product::all();
         return view('products.index', compact('products'));
     }
 
@@ -61,5 +68,8 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
+
+    public function showIndexProduct() {
+        return view('products.index');
+    }
 }
-    

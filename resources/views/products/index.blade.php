@@ -95,7 +95,13 @@
     </style>
 
 <div class="container mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6 text-center">Product List</h1>
+<h1 class="text-3xl font-bold mb-6 text-center">Product List</h1>
+
+<div class="text-right mb-6">
+    <a href="{{ route('products.create') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+        + Add New Product
+    </a>
+</div>
 
     @foreach ($products as $product)
         <div class="bg-white shadow rounded-lg p-6 mb-6">

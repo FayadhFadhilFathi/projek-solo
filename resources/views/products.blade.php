@@ -4,13 +4,6 @@
 
 @section('content')
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #F8F3D9;
-            color: #504B38;
-        }
-
         .product-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -60,12 +53,16 @@
 
     <div class="product-container">
         @foreach($products as $product)
-        <div class="product-card">
-        <img src="{{ $product->image }}" alt="Product Image">
-        <h3>{{ $product->name }}</h3>
-        <p>{{ $product->description }}</p>
-        <button>Choose</button>
-    </div>
-    @endforeach
+            <div class="product-card">
+                <img src="{{ $product->image }}" alt="Product Image">
+                <h3>{{ $product->name }}</h3>
+                <p>{{ $product->description }}</p>
+                <!-- Form untuk menambah produk ke keranjang -->
+                <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                    @csrf
+                    <button type="submit">Choose</button>
+                </form>
+            </div>
+        @endforeach
     </div>
 @endsection

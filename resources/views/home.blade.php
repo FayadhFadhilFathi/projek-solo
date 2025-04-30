@@ -91,21 +91,38 @@
     <header>
         <h1>Welcome to FayyadhFathi pro</h1>
         <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/products">Products</a></li>
-                <li><a href="/cart">Cart</a></li>
-                <li><a href="/checkout">Checkout</a></li>
-                <li><a href="/login">Login</a></li> <!-- Tambahkan link Login -->
-                <li><a href="/register">Register</a></li> <!-- Tambahkan link Register -->
-            </ul>
-        </nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/products">Products</a></li>
+        @auth
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/checkout">Checkout</a></li>
+            <li>
+                <span style="color: #F8F3D9; font-weight: bold;">
+                    Hi, {{ Auth::user()->name }}
+                </span>
+            </li>
+            <li>
+                <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                    @csrf
+                    <button type="submit" style="background:none; border:none; color:#F8F3D9; font-weight:bold; cursor:pointer;">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        @else
+            <li><a href="{{ route('login') }}">Login</a></li>
+            <li><a href="{{ route('register') }}">Register</a></li>
+        @endauth
+    </ul>
+</nav>
+
     </header>
 
     <main>
         <h2>Your One-Stop Shop for All Your Needs</h2>
         <p>Explore a wide variety of products and enjoy seamless transactions!</p>
-        <a href="/products" class="cta-button">Shop Now</a>
+        <a href="{{ route('products.index') }}" class="cta-button">Shop Now</a>
     </main>
 
     <footer>

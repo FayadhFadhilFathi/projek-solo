@@ -4,25 +4,43 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AuthController;
+use App\Models\Product;
 
+// ✅ Halaman home (umum)
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// Rute untuk produk (menggunakan resource untuk CRUD)
-Route::resource('products', ProductController::class);
 
+// ✅ Rute yang hanya bisa diakses jika sudah login
+    Route::middleware('auth')->group(function () {
+    // Rute CRUD produk hanya bisa diakses oleh admin
 
-// Tambahkan route resource untuk OrderItem
-Route::resource('order-items', OrderItemController::class);
+    Route::get('/products', [ProductController::class, 'showIndexProducts']);
+    
 
-// Rute untuk login
+    // Rute CRUD order item
+    Route::resource('order-items', OrderItemController::class);
+
+    // Rute checkout
+    Route::get('/checkout', function () {
+        return view('checkout');
+    })->name('checkout');
+
+    // Rute logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // ✅ Route user dashboard
+    Route::get('/dashboard', function () {
+        $products = \App\Models\Product::all(); // ✅ fetch all products
+        return view('user.dashboard', compact('products'));
+    })->middleware('auth')->name('dashboard');
+
+});
+
+// ✅ Rute login & register (boleh diakses tanpa login)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rute untuk register
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
-
-// Rute untuk logout
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
