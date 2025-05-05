@@ -98,7 +98,7 @@
 <h1 class="text-3xl font-bold mb-6 text-center">Product List</h1>
 
 <div class="text-right mb-6">
-    <a href="{{ route('products.create') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+    <a href="{{ route('create') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
         + Add New Product
     </a>
 </div>
@@ -124,7 +124,7 @@
                 </div>
             </div>
 
-            <div class="mt-6 flex gap-4">
+            {{-- <div class="mt-6 flex gap-4">
                 <a href="{{ route('products.show', $product->id) }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">
                     View Detail
                 </a>
@@ -138,7 +138,7 @@
                         Delete Product
                     </button>
                 </form>
-            </div>
+            </div> --}}
         </div>
     @endforeach
 </div>

@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
-        return view('products.index', compact('products'));
+        return view('products.index', compact('products'))->with('Success, Get All Products');
     }
 
     public function create()
@@ -36,7 +36,7 @@ class ProductController extends Controller
         ]);
 
         Product::create($validated);
-        return redirect()->route('products.index')->with('success', 'Product created successfully!');
+        return redirect()->route('products-index')->with('success', 'Product created successfully!');
     }
 
     public function show(Product $product)

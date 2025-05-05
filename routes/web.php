@@ -4,17 +4,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AuthController;
+use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
+use Illuminate\Auth\Middleware\Authenticate;
 
 // ✅ Halaman home (umum)
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-
 // ✅ Rute yang hanya bisa diakses jika sudah login
-    Route::middleware('auth')->group(function () {
+    Route::middleware([Authenticate::class])->group(function () {
     // Rute CRUD produk hanya bisa diakses oleh admin
+        Route::middleware([AdminMiddleware::class])->group(function () {
+            Route::get('/products', function () {
+                $products = Product::all();
+                return view('products.index', compact('products'));
+            })->name('products-index');
+            Route::get('/product/create', [ProductController::class, 'create'])->name('create');
+            Route::post('/product', [ProductController::class, 'store']);
+        });
 
     Route::get('/products', [ProductController::class, 'showIndexProducts'])->name('products.index');  ;
     
@@ -23,9 +32,9 @@ Route::get('/', function () {
     Route::resource('order-items', OrderItemController::class);
         
     // Rute checkout
-    Route::get('/checkout', function () {
-        return view('checkout');
-    })->name('checkout');
+    // Route::get('/checkout', function () {
+    //     return view('checkout');
+    // })->name('checkout');
 
     // Rute logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -34,7 +43,7 @@ Route::get('/', function () {
     Route::get('/dashboard', function () {
         $products = \App\Models\Product::all(); // ✅ fetch all products
         return view('user.dashboard', compact('products'));
-    })->middleware('auth')->name('dashboard');
+    })->middleware([Authenticate::class])->name('dashboard');
 
 });
 
