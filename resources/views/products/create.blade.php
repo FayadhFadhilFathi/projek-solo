@@ -70,10 +70,10 @@
             background-color: #B9B28A;
         }
     </style>
-    
+
  <div class="container mt-4">
         <h1>Create New Product</h1>
-        <form action="{{ route('products.store') }}" method="POST">
+        <form action="/product" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
