@@ -16,12 +16,12 @@ Route::get('/', function () {
     Route::middleware('auth')->group(function () {
     // Rute CRUD produk hanya bisa diakses oleh admin
 
-    Route::get('/products', [ProductController::class, 'showIndexProducts']);
+    Route::get('/products', [ProductController::class, 'showIndexProducts'])->name('products.index');  ;
     
 
     // Rute CRUD order item
     Route::resource('order-items', OrderItemController::class);
-
+        
     // Rute checkout
     Route::get('/checkout', function () {
         return view('checkout');
