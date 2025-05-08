@@ -1,55 +1,67 @@
 <?php
+// routes/web.php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
 use Illuminate\Auth\Middleware\Authenticate;
+use App\Http\Controllers\UserController;
 
-// ✅ Halaman home (umum)
+// Home route
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// ✅ Rute yang hanya bisa diakses jika sudah login
-    Route::middleware([Authenticate::class])->group(function () {
-    // Rute CRUD produk hanya bisa diakses oleh admin
-        Route::middleware([AdminMiddleware::class])->group(function () {
-            Route::get('/products', function () {
-                $products = Product::all();
-                return view('products.index', compact('products'));
-            })->name('products-index');
-            Route::get('/product/create', [ProductController::class, 'create'])->name('create');
-            Route::post('/product', [ProductController::class, 'store']);
-        });
-
-    Route::get('/products', [ProductController::class, 'showIndexProducts'])->name('products.index');  ;
-    
-
-    // Rute CRUD order item
-    Route::resource('order-items', OrderItemController::class);
+// Routes that require authentication
+Route::middleware([Authenticate::class])->group(function () {
+    // Admin routes
+    Route::middleware([AdminMiddleware::class])->group(function () {
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index'); // This is the route you need
+        Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
+        Route::post('/product', [ProductController::class, 'store'])->name('product.store');
         
-    // Rute checkout
-    // Route::get('/checkout', function () {
-    //     return view('checkout');
-    // })->name('checkout');
+        // Add the edit route
+        Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
 
-    // Rute logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        // Add the delete confirmation route
+        Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
+        
+        // The destroy route for deleting a product
+        Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
 
-    // ✅ Route user dashboard
+        // Admin dashboard route
+        Route::get('/admin/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+
+        // User management routes
+        Route::resource('users', UserController::class);
+    });
+
+    // User order routes
+    Route::prefix('user/order')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('user.order.index');
+        Route::get('/checkout', [OrderController::class, 'checkout'])->name('user.order.checkout');
+        Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
+    });
+
+    // CRUD routes for order items
+    Route::resource('order-items', OrderItemController::class);
+
+    // User dashboard route
     Route::get('/dashboard', function () {
-        $products = \App\Models\Product::all(); // ✅ fetch all products
+        $products = Product::all();
         return view('user.dashboard', compact('products'));
-    })->middleware([Authenticate::class])->name('dashboard');
-
+    })->name('dashboard');
 });
 
-// ✅ Rute login & register (boleh diakses tanpa login)
+// Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

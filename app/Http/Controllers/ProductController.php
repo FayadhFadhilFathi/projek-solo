@@ -9,15 +9,15 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        // Hanya admin yang bisa mengakses create, store, edit, update, destroy
+        // Only admin can access create, store, edit, update, destroy
         $this->middleware('admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
-        $this->middleware('auth'); // Semua rute hanya bisa diakses oleh user yang login
+        $this->middleware('auth'); // All routes can only be accessed by logged-in users
     }
 
     public function index()
     {
         $products = Product::all();
-        return view('products.index', compact('products'))->with('Success, Get All Products');
+        return view('products.index', compact('products'))->with('success', 'Get All Products');
     }
 
     public function create()
@@ -32,11 +32,10 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'stock' => 'required|integer',
-            'image' => 'nullable|url', // Pastikan URL valid
+            'image' => 'nullable|url', // Ensure the URL is valid
         ]);
-
         Product::create($validated);
-        return redirect()->route('products-index')->with('success', 'Product created successfully!');
+        return redirect()->route('products.index')->with('success', 'Product created successfully!'); // Redirect to products.index
     }
 
     public function show(Product $product)
@@ -69,7 +68,15 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    public function showIndexProduct() {
+    public function showIndexProduct()
+    {
         return view('products.index');
+    }
+
+    // Method to show delete confirmation
+    public function delete($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('products.delete', compact('product'));
     }
 }

@@ -9,11 +9,10 @@ class AuthController extends Controller
 {
     // Menampilkan form login
     public function showLoginForm()
-    {
-        return view('auth.login');
-    }
+{
+    return view('auth.login');
+}
 
-    // Menangani proses login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -21,20 +20,18 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // cek apakah yang login adalah admin
-        if ($credentials['email'] === 'admin@example.com') {
-            $credentials['role'] = 'admin';
-        }
-        // Jika role admin, maka login sebagai admin
-        if ($credentials['role'] === 'admin') {
-            $credentials['role'] = 'admin';
-        } else {
-            $credentials['role'] = 'user';
-        }
+        // Cek apakah pengguna berhasil login
+        if (auth()->attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
+            $user = Auth::user(); // Dapatkan data pengguna yang login
 
-        if (auth()->attempt($credentials)) {
-            $request->session()->regenerate(); // ✅ Tambahan penting
-            return redirect()->route('home');
+            // Periksa apakah pengguna adalah admin
+            if ($user->role === 'admin') {
+                $request->session()->regenerate(); // Regenerasi session
+                return redirect()->route('admin.dashboard'); // Redirect ke dashboard admin
+            }
+
+            $request->session()->regenerate(); // Regenerasi session
+            return redirect()->route('home'); // Redirect ke halaman utama
         }
 
         return back()->withErrors([
@@ -61,21 +58,22 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
+            'role' => 'user', // Set default role
         ]);
 
         auth()->login($user);
-        $request->session()->regenerate(); // ✅ Optional untuk keamanan ekstra
+        $request->session()->regenerate(); // Regenerasi session
 
         return redirect()->route('dashboard');
     }
 
-    // ✅ Menangani logout dengan aman
+    // Menangani logout dengan aman
     public function logout(Request $request)
     {
         auth()->logout();
 
-        $request->session()->invalidate();       // ✅ Hancurkan session lama
-        $request->session()->regenerateToken();  // ✅ Buat token CSRF baru
+        $request->session()->invalidate();       // Hancurkan session lama
+        $request->session()->regenerateToken();  // Buat token CSRF baru
 
         return redirect()->route('login');
     }

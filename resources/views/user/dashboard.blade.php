@@ -80,7 +80,7 @@
     <h1>Welcome, {{ Auth::user()->name }}! 🛒</h1>
 
     <div class="text-right mb-4">
-        <a href="{{ route('checkout') }}" class="cart-btn">
+        <a href="{{ route('user.order.index') }}" class="cart-btn">
             🛍️ View My Cart
         </a>
     </div>
@@ -101,17 +101,18 @@
                     <p><strong>Stock:</strong> {{ $product->stock }}</p>
 
                     <div class="product-actions">
-                        <form action="{{ route('order-items.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button type="submit" class="buy-btn">Buy Now</button>
-                        </form>
+                    <form action="{{ route('user.order.index') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <button type="submit" class="buy-btn">Buy Now</button>
+                    </form>
 
-                        <form action="{{ route('order-items.store') }}" method="POST" style="display:inline;">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <button type="submit" class="cart-btn">Add to Cart</button>
-                        </form>
+                    <form action="{{ route('user.order.index') }}" method="POST" style="display:inline;">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <button type="submit" class="cart-btn">Add to Cart</button>
+                    </form>
+
                     </div>
                 </div>
             </div>
