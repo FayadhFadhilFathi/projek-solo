@@ -19,23 +19,21 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
-        // Cek apakah pengguna berhasil login
-        if (auth()->attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-            $user = Auth::user(); // Dapatkan data pengguna yang login
-
-            // Periksa apakah pengguna adalah admin
+        // Attempt to log the user in
+        if (auth()->attempt($credentials)) {
+            $user = Auth::user(); // Get the logged-in user's data
+            // Regenerate the session to prevent session fixation
+            $request->session()->regenerate();
+            // Redirect based on user role
             if ($user->role === 'admin') {
-                $request->session()->regenerate(); // Regenerasi session
-                return redirect()->route('admin.dashboard'); // Redirect ke dashboard admin
+                return redirect()->route('admin.dashboard'); // Redirect to admin dashboard
+            } else {
+                return redirect()->route('dashboard'); // Redirect to user dashboard
             }
-
-            $request->session()->regenerate(); // Regenerasi session
-            return redirect()->route('home'); // Redirect ke halaman utama
         }
-
+        // If login fails, redirect back with an error
         return back()->withErrors([
-            'email' => 'Email atau password salah.',
+            'email' => 'Email or password is incorrect.',
         ]);
     }
 

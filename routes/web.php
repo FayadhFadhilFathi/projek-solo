@@ -35,8 +35,10 @@ Route::middleware([Authenticate::class])->group(function () {
 
         // Admin dashboard route
         Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');
+            $users = \App\Models\User::all(); // Fetch all users from the database
+            return view('admin.dashboard', compact('users')); // Pass the users to the view
         })->name('admin.dashboard');
+
 
         // User management routes
         Route::resource('users', UserController::class);
