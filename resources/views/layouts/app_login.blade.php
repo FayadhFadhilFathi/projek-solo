@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'My App')</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    
+
     <style>
         body {
             margin: 0;
@@ -64,26 +63,10 @@
 
         main {
             padding: 30px;
-            text-align: center;
             min-height: calc(100vh - 120px);
-        }
-
-        .cta-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 15px 30px;
-            background-color: #504B38;
-            color: #F8F3D9;
-            font-size: 1.2em;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-        }
-
-        .cta-button:hover {
-            background-color: #B9B28A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         footer {
@@ -97,68 +80,14 @@
             margin-top: 60px;
         }
 
-        .banner-image {
-            max-width: 26%;
-            height: auto;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-
-        .product-section {
-            margin-top: 60px;
-        }
-
-        .product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .product-card {
-            background-color: #EBE5C2;
-            padding: 20px;
-            border-radius: 10px;
-            width: 200px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-card img {
-            width: 100%;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .product-card button {
-            margin: 5px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .buy-button {
-            background-color: #504B38;
-            color: #F8F3D9;
-            border: none;
-        }
-
-        .info-button {
-            background-color: transparent;
-            border: 1px solid #504B38;
-            color: #504B38;
-        }
-
-        /* Form styling (shared for login/register) */
+        /* Form styling */
         .form-container {
-            max-width: 500px;
-            margin: 10px auto;
+            width: 100%;
+            max-width: 450px;
             background-color: #FFFFFF;
-            padding: 50px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .form-container h2 {
@@ -167,43 +96,51 @@
             color: #504B38;
         }
 
-        label {
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            text-align:left;
+            color: #504B38;
         }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+        .form-group input {
+            width: 93%;
+            padding: 12px 14px;
             border: 1px solid #B9B28A;
-            border-radius: 5px;
+            border-radius: 6px;
+            background-color: #fdfcf6;
+            color: #504B38;
+            font-size: 16px;
         }
 
-        button {
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
             background-color: #504B38;
             color: #FFFFFF;
-            font-size: 16px;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        button:hover {
+        .form-container button:hover {
             background-color: #B9B28A;
         }
 
         .error-messages {
             color: #D9534F;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
     </style>
 
-    {{-- Tempat untuk custom styles tambahan --}}
     @stack('styles')
 </head>
 <body>
@@ -212,14 +149,12 @@
         <nav>
             <ul>
                 <li><a href="{{ url('/') }}">Home</a></li>
-
                 @auth
                     @if (auth()->user()->role === 'admin')
                         <li><a href="{{ route('products.index') }}">Admin Dashboard</a></li>
                     @else
                         <li><a href="{{ route('user.order.index') }}">My Orders</a></li>
                     @endif
-
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -235,14 +170,38 @@
     </header>
 
     <main>
-        @yield('content')
+        <div class="form-container">
+            <h2>Login</h2>
+            {{-- Optional error display --}}
+            <div class="error-messages">
+                {{-- @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                @endif --}}
+            </div>
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+        </div>
     </main>
 
     <footer>
         <p>&copy; 2025 Your Store. All Rights Reserved.</p>
     </footer>
 
-    {{-- Tempat untuk custom JS --}}
     @stack('scripts')
 </body>
 </html>

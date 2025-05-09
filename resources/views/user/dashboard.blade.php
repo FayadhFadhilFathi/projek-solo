@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_dasborduser')
 
 @section('title', 'Dashboard - Shop Products')
 
