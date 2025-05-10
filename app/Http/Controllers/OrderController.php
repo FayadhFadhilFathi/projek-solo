@@ -6,35 +6,55 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     // Menampilkan daftar produk untuk dipesan
     public function index()
-    {
-        $products = Product::all();
-        return view('orders.index', compact('products'));
-    }
+{
+    // Fetch orders for the authenticated user
+    $orders = Order::with('product')->where('user_id', Auth::id())->get();
+    return view('user.order.index', compact('orders')); // Pass the orders to the view
+}
+
 
     // Menyimpan pesanan ke database
     public function store(Request $request)
-    {
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'total_price' => $request->total_price,
-            'status' => 'pending',
-        ]);
+{
+    // Validate the incoming request data
+    $validated = $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1',
+    ]);
+    // Create the order
+    $order = new Order();
+    $order->user_id = Auth::id();
+    $order->product_id = $validated['product_id'];
+    $order->quantity = $validated['quantity'];
+    $order->total_price = $this->calculateTotalPrice($validated['product_id'], $validated['quantity']);
+    $order->status = 'completed';
+    $order->save();
+    // Flash a success message
+    return redirect()->route('user.order.checkout')->with('success', 'You have successfully purchased the product!');
+}
+    
+    
+    
 
-        // Logika tambahan untuk menyimpan item ke tabel order_items
-        // ...
 
-        return redirect()->route('order.checkout')->with('success', 'Order berhasil dibuat!');
-    }
 
     // Menampilkan halaman checkout
     public function checkout()
-    {
-        $order = Order::where('user_id', Auth::id())->latest()->first();
-        return view('orders.checkout', compact('order'));
+{
+    // Eager load the product relationship
+    $order = Order::with('product')->where('user_id', Auth::id())->latest()->first();
+    // Check if the order exists
+    if (!$order || !$order->product) { // Check if the product is also loaded
+        return redirect()->route('user.order.index')->with('error', 'No order found. Please place an order first.');
     }
+    return view('user.order.checkout', compact('order')); // Pass the order to the view
+}
+
+    
 }

@@ -201,6 +201,35 @@
             color: #D9534F;
             margin-bottom: 20px;
         }
+
+
+        /* Add this to your existing styles in app.blade.php */
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.orders-table th, .orders-table td {
+    border: 1px solid #B9B28A;
+    padding: 12px;
+    text-align: left;
+}
+
+.orders-table th {
+    background-color: #B9B28A;
+    color: #F8F3D9;
+}
+
+.orders-table tr:nth-child(even) {
+    background-color: #EBE5C2;
+}
+
+.orders-table tr:hover {
+    background-color: #D9D9D9;
+}
+
     </style>
 
     {{-- Tempat untuk custom styles tambahan --}}

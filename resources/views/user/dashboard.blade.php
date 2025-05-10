@@ -101,11 +101,13 @@
                     <p><strong>Stock:</strong> {{ $product->stock }}</p>
 
                     <div class="product-actions">
-                    <form action="{{ route('user.order.index') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <button type="submit" class="buy-btn">Buy Now</button>
-                    </form>
+                    <form action="{{ route('user.order.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="quantity" value="1"> <!-- Assuming quantity is 1 for Buy Now -->
+                    <button type="submit" class="buy-btn">Buy Now</button>
+                     </form>
+   
 
                     <form action="{{ route('user.order.index') }}" method="POST" style="display:inline;">
                         @csrf

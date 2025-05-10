@@ -3,12 +3,25 @@
 @section('content')
 <main>
     <h1>My Orders</h1>
-    <ul>
-        @foreach($orders as $order)
-            <li>
-                {{ $order->product->name }} - Quantity: {{ $order->quantity }}
-            </li>
-        @endforeach
-    </ul>
+    <table class="orders-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($orders as $order)
+                <tr>
+                    <td>{{ $order->product->name }}</td>
+                    <td>{{ $order->quantity }}</td>
+                    <td>${{ number_format($order->total_price, 2) }}</td>
+                    <td>{{ ucfirst($order->status) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </main>
 @endsection

@@ -20,25 +20,27 @@ Route::get('/', function () {
 Route::middleware([Authenticate::class])->group(function () {
     // Admin routes
     Route::middleware([AdminMiddleware::class])->group(function () {
-        Route::get('/products', [ProductController::class, 'index'])->name('products.index'); // This is the route you need
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
         Route::post('/product', [ProductController::class, 'store'])->name('product.store');
-        
+
         // Add the edit route
         Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
 
+        // Add the update route
+        Route::put('/product/{product}', [ProductController::class, 'update'])->name('products.update'); // <-- Add this line
+
         // Add the delete confirmation route
         Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
-        
+
         // The destroy route for deleting a product
         Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
 
         // Admin dashboard route
         Route::get('/admin/dashboard', function () {
-            $users = \App\Models\User::all(); // Fetch all users from the database
-            return view('admin.dashboard', compact('users')); // Pass the users to the view
+            $users = \App\Models\User::all();
+            return view('admin.dashboard', compact('users'));
         })->name('admin.dashboard');
-
 
         // User management routes
         Route::resource('users', UserController::class);
@@ -67,3 +69,4 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+

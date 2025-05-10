@@ -1,24 +1,34 @@
 <?php
 
+// database/seeders/UserSeeder.php
+
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        //
+        // Check if the user already exists before creating
+        if (!User ::where('email', 'ayam@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Bebek',
+                'email' => 'ayam@gmail.com',
+                'password' => bcrypt('your_password'), // Use a secure password
+                // Add other fields as necessary
+            ]);
+        }
 
-        User::create([
-            "name"=> "bebek",
-            "email"=> "ayam@gmail.com",
-            "password"=> bcrypt("ayam1234"),
-        ]);
+        // Add more users as needed, ensuring no duplicates
+        // Example:
+        if (!User ::where('email', 'anotheruser@gmail.com')->exists()) {
+            User::create([
+                'name' => 'Another User',
+                'email' => 'anotheruser@gmail.com',
+                'password' => bcrypt('another_password'),
+            ]);
+        }
     }
 }
