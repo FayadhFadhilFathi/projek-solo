@@ -54,14 +54,6 @@
             border-color: #504B38;
         }
 
-        .form-group img {
-            display: block;
-            margin-top: 10px;
-            max-width: 150px;
-            border: 1px solid #B9B28A;
-            border-radius: 5px;
-        }
-
         button {
             padding: 10px 20px;
             font-size: 1.1em;
@@ -80,7 +72,7 @@
     </style>
 <div class="container mt-4">
         <h1>Edit Product</h1>
-        <form action="{{ route('products.update', $product->id) }}" method="POST">
+        <form action="{{ route('product.update', $product->id) }}" method="POST"> <!-- Corrected here -->
             @csrf
             @method('PUT')
             <div class="mb-3">
