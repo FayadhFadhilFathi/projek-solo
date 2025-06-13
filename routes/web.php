@@ -49,6 +49,8 @@ Route::middleware([Authenticate::class])->group(function () {
     Route::prefix('user/order')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('user.order.index');
         Route::get('/checkout', [OrderController::class, 'checkout'])->name('user.order.checkout');
+        Route::post('/payment/process', [OrderController::class, 'processPayment'])->name('user.payment.process');
+        Route::get('/history', [OrderController::class, 'history'])->name('user.order.history');
         Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
     });
 

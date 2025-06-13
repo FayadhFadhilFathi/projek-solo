@@ -96,19 +96,15 @@
             color: #504B38;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
+        .form-container label {
             display: block;
             margin-bottom: 8px;
+            margin-top: 15px;
             font-weight: bold;
             color: #504B38;
         }
 
-        .form-group input {
+        .form-container input {
             width: 93%;
             padding: 12px 14px;
             border: 1px solid #B9B28A;
@@ -116,6 +112,13 @@
             background-color: #fdfcf6;
             color: #504B38;
             font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .form-container input:focus {
+            outline: none;
+            border-color: #504B38;
+            box-shadow: 0 0 0 2px rgba(80, 75, 56, 0.1);
         }
 
         .form-container button {
@@ -129,6 +132,7 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-top: 15px;
         }
 
         .form-container button:hover {
@@ -136,8 +140,21 @@
         }
 
         .error-messages {
-            color: #D9534F;
-            margin-bottom: 15px;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .error-messages ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .error-messages li {
+            margin-bottom: 5px;
         }
     </style>
 
@@ -170,32 +187,7 @@
     </header>
 
     <main>
-        <div class="form-container">
-            <h2>Login</h2>
-            {{-- Optional error display --}}
-            <div class="error-messages">
-                {{-- @if ($errors->any())
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
-                @endif --}}
-            </div>
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        @yield('content')
     </main>
 
     <footer>

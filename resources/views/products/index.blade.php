@@ -3,154 +3,75 @@
 @section('title', 'Product List')
 
 @section('content')
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #F8F3D9;
-            color: #504B38;
-        }
+<div class="container">
+    <div class="admin-header">
+        <h1 class="text-center mb-0">Product Management</h1>
+    </div>
 
-        main {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #FFFFFF;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    <div class="text-end mb-4">
+        <a href="{{ route('product.create') }}" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>Add New Product
+        </a>
+    </div>
 
-        h1 {
-            font-size: 2em;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #504B38;
-        }
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th,
-        table td {
-            border: 1px solid #B9B28A;
-            padding: 10px;
-            text-align: center;
-        }
-
-        table th {
-            background-color: #504B38;
-            color: #F8F3D9;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #F8F3D9;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .action-buttons a {
-            text-decoration: none;
-            padding: 8px 12px;
-            font-size: 0.9em;
-            color: #F8F3D9;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .action-buttons .edit {
-            background-color: #B9B28A;
-        }
-
-        .action-buttons .delete {
-            background-color: #E63946;
-        }
-
-        .action-buttons a:hover {
-            opacity: 0.8;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            font-weight: bold;
-            background-color: #504B38;
-            color: #F8F3D9;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #B9B28A;
-        }
-
-        /* Styles for the product image to keep it at a manageable size */
-        .product-image {
-            max-width: 150px;
-            max-height: 150px;
-            object-fit: cover; /* maintains aspect ratio and cropping if needed */
-            border-radius: 8px;
-        }
-
-        /* Style for the placeholder when no image exists */
-        .no-image-placeholder {
-            width: 150px;
-            height: 150px;
-            background-color: #d3d3d3;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666666;
-            font-style: italic;
-        }
-    </style>
-
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold mb-6 text-center">Product List</h1>
-
-        <div class="text-right mb-6">
-            <a href="{{ route('product.create') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                + Add New Product
-            </a>
-        </div>
-
+    <div class="row">
         @foreach ($products as $product)
-            <div class="bg-white shadow rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold mb-4">{{ $product->name }}</h2>
-
-                <div class="flex gap-4">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="text-center pt-3">
                     @if ($product->image)
-                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="product-image">
+                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="img-fluid rounded" style="height: 150px; object-fit: cover;">
                     @else
-                        <div class="no-image-placeholder">
-                            No Image
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                            <span class="text-muted fst-italic">No Image Available</span>
                         </div>
                     @endif
-
-                    <div>
-                        <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ $product->description ?? 'No description available' }}</p>
-                        <p class="text-gray-700 mb-2"><strong>Price:</strong> ${{ number_format($product->price, 2) }}</p>
-                        <p class="text-gray-700 mb-2"><strong>Stock:</strong> {{ $product->stock }}</p>
-                        <p class="text-gray-700"><strong>Created At:</strong> {{ $product->created_at->format('d M Y, H:i') }}</p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ $product->name }}</h5>
+                    <p class="card-text text-truncate">{{ $product->description ?? 'No description available' }}</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item bg-transparent">
+                            <strong>Price:</strong> ${{ number_format($product->price, 2) }}
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>Stock:</strong> {{ $product->stock }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ route('product.edit', $product->id) }}" class="btn btn-warning">
+                            <i class="fas fa-edit me-1"></i> Edit
+                        </a>
+                        <a href="{{ route('product.delete', $product->id) }}" class="btn btn-danger" 
+                           onclick="return confirm('Are you sure you want to delete this product?')">
+                            <i class="fas fa-trash me-1"></i> Delete
+                        </a>
                     </div>
                 </div>
-
-                <div class="action-buttons">
-                    <a href="{{ route('product.edit', $product->id) }}" class="edit">Edit</a>
-                    <a href="{{ route('product.delete', $product->id) }}" class="delete"
-                       onclick="return confirm('Are you sure you want to delete this product?')">Delete</a>
-                </div>
             </div>
+        </div>
         @endforeach
     </div>
+
+    <!-- Empty state if no products -->
+    @if(count($products) == 0)
+    <div class="text-center p-5">
+        <div class="mb-4">
+            <i class="fas fa-box-open fa-4x text-muted"></i>
+        </div>
+        <h3>No products found</h3>
+        <p class="text-muted">Start by adding your first product</p>
+        <a href="{{ route('product.create') }}" class="btn btn-primary mt-3">Add Product</a>
+    </div>
+    @endif
+</div>
 @endsection

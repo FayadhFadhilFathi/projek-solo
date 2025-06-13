@@ -1,4 +1,4 @@
-@extends('layouts.app_dasborduser')
+@extends('layouts.app')
 
 @section('title', 'Dashboard - Shop Products')
 
@@ -109,11 +109,11 @@
                      </form>
    
 
-                    <form action="{{ route('user.order.index') }}" method="POST" style="display:inline;">
+                    <!-- <form action="{{ route('user.order.index') }}" method="POST" style="display:inline;">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                         <button type="submit" class="cart-btn">Add to Cart</button>
-                    </form>
+                    </form> -->
 
                     </div>
                 </div>
