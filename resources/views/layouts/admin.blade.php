@@ -3,467 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard')</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'Admin Dashboard - Project Store')</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- Custom CSS -->
     <style>
+        :root {
+            --admin-primary: #6f42c1;
+            --admin-secondary: #6c757d;
+            --admin-success: #198754;
+            --admin-info: #0dcaf0;
+            --admin-warning: #ffc107;
+            --admin-danger: #dc3545;
+            --admin-light: #f8f9fa;
+            --admin-dark: #212529;
+            --admin-cream: #f8f6f0;
+        }
+        
         body {
-            background-color: #F8F3D9;
-            color: #504B38;
+            background-color: var(--admin-cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
-
-        .navbar {
-            background: linear-gradient(135deg, #B9B28A 0%, #A5A077 100%) !important;
-            padding: 1rem 0;
-            box-shadow: 0 4px 20px rgba(80, 75, 56, 0.15);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(248, 243, 217, 0.1);
-            animation: fadeInDown 0.6s ease-out;
+        
+        /* Admin Navbar Styling */
+        .navbar-admin {
+            background: linear-gradient(135deg, var(--admin-primary), #5a32a3);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-bottom: 3px solid #5a32a3;
         }
-
-        /* Container with proper spacing */
-        .navbar .container {
-            max-width: 100%;
-            padding-left: 30px; /* Increased from default to give more space */
-            padding-right: 30px; /* Increased from default to give more space */
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        
         .navbar-brand {
-            color: #F8F3D9 !important;
             font-weight: 700;
-            font-size: 1.8rem;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1.6rem;
+            color: white !important;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin-left: 10px; /* Added margin to move brand slightly right */
         }
-
-        .navbar-brand::before {
-            content: '\f0e4';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 1.2rem;
-            background: linear-gradient(45deg, #F8F3D9, #EBE5C2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        
+        .navbar-brand .bi {
+            font-size: 1.4rem;
         }
-
-        .navbar-brand:hover {
-            color: #EBE5C2 !important;
-            transform: scale(1.05);
+        
+        .navbar-nav .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            margin: 0 0.25rem;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        .nav-link {
-            color: #F8F3D9 !important;
-            padding: 0.75rem 1.5rem !important;
-            border-radius: 12px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: white !important;
+            transform: translateY(-1px);
+        }
+        
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            color: white !important;
+        }
+        
+        /* Logout button styling */
+        .logout-btn {
+            background: rgba(255,255,255,0.1) !important;
+            border: 1px solid rgba(255,255,255,0.3) !important;
+            color: white !important;
+            font-weight: 500;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Main content area */
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        /* Admin page header */
+        .admin-header {
+            background: linear-gradient(135deg, white, #f8f9fa);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            border-left: 4px solid var(--admin-primary);
+        }
+        
+        .admin-header h1 {
+            color: var(--admin-primary);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Card enhancements */
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--admin-primary), #5a32a3);
+            color: white;
+            border: none;
             font-weight: 600;
-            margin: 0 0.3rem;
-            text-decoration: none;
+        }
+        
+        /* Table styling */
+        .table {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, var(--admin-primary), #5a32a3);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(111, 66, 193, 0.05);
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        /* Button styling */
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(45deg, transparent 50%, rgba(235, 229, 194, 0.1) 50%);
-            background-size: 200% 200%;
-            background-position: 100% 100%;
         }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(235, 229, 194, 0.3), transparent);
-            transition: left 0.6s;
+        
+        .btn:hover {
+            transform: translateY(-1px);
         }
-
-        .nav-link:hover::before {
-            left: 100%;
-        }
-
-        .nav-link:hover,
-        .nav-link:focus {
-            background: linear-gradient(135deg, #EBE5C2 0%, #DDD6B8 100%) !important;
-            color: #504B38 !important;
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(80, 75, 56, 0.2);
-            background-position: 0% 0%;
-        }
-
-        .nav-link:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* Add icons to nav links */
-        .nav-link[href*="products"]::after {
-            content: '\f468';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 0.9rem;
-        }
-
-        .nav-link[href*="users"]::after {
-            content: '\f0c0';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 0.9rem;
-        }
-
-        /* Navbar toggler styling */
-        .navbar-toggler {
-            border: 2px solid #F8F3D9;
-            padding: 0.4rem 0.6rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            background: rgba(248, 243, 217, 0.1);
-            margin-right: 10px; /* Added margin to move toggler slightly left */
-        }
-
-        .navbar-toggler:hover {
-            background: rgba(248, 243, 217, 0.2);
-            border-color: #EBE5C2;
-            transform: scale(1.05);
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: 0 0 0 0.25rem rgba(248, 243, 217, 0.3);
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28248, 243, 217, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-            transition: all 0.3s ease;
-        }
-
-        /* Desktop navigation */
-        @media (min-width: 992px) {
-            .navbar-nav {
-                margin-right: 10px !important; /* Added margin to move nav items slightly left */
-            }
-
-            .nav-menu-container {
-                display: flex !important;
-                align-items: center;
-                gap: 0.2rem;
-                background: rgba(248, 243, 217, 0.05);
-                padding: 0.5rem;
-                border-radius: 16px;
-                backdrop-filter: blur(5px);
-            }
-
-            .logout-btn {
-                background: linear-gradient(45deg, transparent 50%, rgba(235, 229, 194, 0.1) 50%) !important;
-                background-size: 200% 200%;
-                background-position: 100% 100%;
-                border: none !important;
-                color: #F8F3D9 !important;
-                padding: 0.75rem 1.5rem !important;
-                border-radius: 12px;
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                font-weight: 600;
-                margin: 0 0.3rem;
-                cursor: pointer;
-                position: relative;
-                overflow: hidden;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-
-            .logout-btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(235, 229, 194, 0.3), transparent);
-                transition: left 0.6s;
-            }
-
-            .logout-btn::after {
-                content: '\f2f5';
-                font-family: 'Font Awesome 6 Free';
-                font-weight: 900;
-                font-size: 0.9rem;
-            }
-
-            .logout-btn:hover::before {
-                left: 100%;
-            }
-
-            .logout-btn:hover,
-            .logout-btn:focus {
-                background: linear-gradient(135deg, #EBE5C2 0%, #DDD6B8 100%) !important;
-                color: #504B38 !important;
-                transform: translateY(-2px) scale(1.02);
-                box-shadow: 0 8px 25px rgba(80, 75, 56, 0.2);
-                background-position: 0% 0%;
-            }
-
-            .logout-btn:active {
-                transform: translateY(0) scale(0.98);
-            }
-        }
-
-        /* Mobile menu styling */
-        @media (max-width: 991.98px) {
-            .navbar-collapse {
-                background: linear-gradient(135deg, #B9B28A 0%, #A5A077 100%);
-                margin-top: 1rem;
-                padding: 2rem;
-                border-radius: 20px;
-                box-shadow: 0 20px 40px rgba(80, 75, 56, 0.3);
-                backdrop-filter: blur(20px);
-                border: 1px solid rgba(248, 243, 217, 0.2);
-                animation: slideDown 0.3s ease-out;
-            }
-
-            @keyframes slideDown {
-                from {
-                    opacity: 0;
-                    transform: translateY(-20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .navbar-nav {
-                gap: 0.8rem;
-            }
-
-            .nav-item {
-                width: 100%;
-            }
-
-            .nav-link {
-                padding: 1rem 1.5rem !important;
-                text-align: left;
-                display: flex !important;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-                margin: 0;
-                border-radius: 12px;
-                background: rgba(248, 243, 217, 0.1);
-                border: 1px solid rgba(248, 243, 217, 0.2);
-                backdrop-filter: blur(5px);
-            }
-
-            .nav-link:hover,
-            .nav-link:focus {
-                background: linear-gradient(135deg, #EBE5C2 0%, #DDD6B8 100%) !important;
-                color: #504B38 !important;
-                transform: translateX(8px) scale(1.02);
-                box-shadow: 0 8px 25px rgba(80, 75, 56, 0.25);
-            }
-
-            .logout-btn {
-                width: 100% !important;
-                text-align: left !important;
-                padding: 1rem 1.5rem !important;
-                background: rgba(248, 243, 217, 0.1) !important;
-                border: 1px solid rgba(248, 243, 217, 0.2) !important;
-                color: #F8F3D9 !important;
-                border-radius: 12px;
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                font-weight: 600;
-                cursor: pointer;
-                backdrop-filter: blur(5px);
-                display: flex !important;
-                align-items: center;
-                justify-content: space-between;
-            }
-
-            .logout-btn::after {
-                content: '\f2f5';
-                font-family: 'Font Awesome 6 Free';
-                font-weight: 900;
-                font-size: 0.9rem;
-            }
-
-            .logout-btn:hover,
-            .logout-btn:focus {
-                background: linear-gradient(135deg, #EBE5C2 0%, #DDD6B8 100%) !important;
-                color: #504B38 !important;
-                transform: translateX(8px) scale(1.02);
-                box-shadow: 0 8px 25px rgba(80, 75, 56, 0.25);
-            }
-        }
-
-        main {
-            flex: 1;
-        }
-
-        footer {
-            background: linear-gradient(135deg, #504B38 0%, #3F392B 100%);
-            color: #F8F3D9;
-            padding: 2rem 0;
-            box-shadow: 0 -4px 20px rgba(80, 75, 56, 0.2);
-        }
-
+        
         .btn-primary {
-            background: linear-gradient(135deg, #504B38 0%, #3F392B 100%);
+            background: linear-gradient(45deg, var(--admin-primary), #5a32a3);
             border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(80, 75, 56, 0.3);
         }
-
+        
         .btn-primary:hover {
-            background: linear-gradient(135deg, #B9B28A 0%, #A5A077 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(80, 75, 56, 0.4);
+            background: linear-gradient(45deg, #5a32a3, var(--admin-primary));
+            box-shadow: 0 0.25rem 0.5rem rgba(111, 66, 193, 0.3);
         }
-
+        
+        .btn-success {
+            background: linear-gradient(45deg, var(--admin-success), #146c43);
+            border: none;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(45deg, #146c43, var(--admin-success));
+            box-shadow: 0 0.25rem 0.5rem rgba(25, 135, 84, 0.3);
+        }
+        
         .btn-warning {
-            background: linear-gradient(135deg, #FFC107 0%, #FFB300 100%);
+            background: linear-gradient(45deg, var(--admin-warning), #e0a800);
             border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            color: #000;
         }
-
+        
         .btn-warning:hover {
-            background: linear-gradient(135deg, #FFCA28 0%, #FFC107 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            background: linear-gradient(45deg, #e0a800, var(--admin-warning));
+            box-shadow: 0 0.25rem 0.5rem rgba(255, 193, 7, 0.3);
+            color: #000;
         }
-
+        
         .btn-danger {
-            background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+            background: linear-gradient(45deg, var(--admin-danger), #b02a37);
             border: none;
-            border-radius: 12px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
         }
-
+        
         .btn-danger:hover {
-            background: linear-gradient(135deg, #F44336 0%, #E53935 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(229, 57, 53, 0.4);
+            background: linear-gradient(45deg, #b02a37, var(--admin-danger));
+            box-shadow: 0 0.25rem 0.5rem rgba(220, 53, 69, 0.3);
         }
-
+        
+        .btn-info {
+            background: linear-gradient(45deg, var(--admin-info), #0aa1c0);
+            border: none;
+        }
+        
+        .btn-info:hover {
+            background: linear-gradient(45deg, #0aa1c0, var(--admin-info));
+            box-shadow: 0 0.25rem 0.5rem rgba(13, 202, 240, 0.3);
+        }
+        
+        /* Alert styling */
+        .alert {
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d1eddd, #a3cfbb);
+            border-left-color: var(--admin-success);
+            color: #0f5132;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f1aeb5);
+            border-left-color: var(--admin-danger);
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffecb5);
+            border-left-color: var(--admin-warning);
+            color: #664d03;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #b6d7ff);
+            border-left-color: var(--admin-info);
+            color: #055160;
+        }
+        
+        /* Avatar circle for user tables */
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--admin-primary), #5a32a3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        /* Badge styling */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--admin-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            color: var(--admin-dark);
+            margin-bottom: 1rem;
+        }
+        
+        /* Footer styling */
+        footer {
+            background: linear-gradient(135deg, var(--admin-dark), #495057);
+            color: white;
+            padding: 2rem 0;
+            margin-top: auto;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
         /* Responsive adjustments */
-        @media (max-width: 1024px) {
-            .navbar {
-                font-size: 0.9rem;
-                padding: 0.75rem 0;
-            }
-
-            .navbar-brand {
-                font-size: 1.6rem;
-            }
-
-            footer {
-                font-size: 0.85rem;
-                padding: 1.5rem 0;
-            }
-        }
-
         @media (max-width: 768px) {
             .navbar-brand {
-                font-size: 1.4rem;
-                margin-left: 5px; /* Smaller margin for mobile */
+                font-size: 1.3rem;
             }
-
-            .navbar-toggler {
-                margin-right: 5px; /* Smaller margin for mobile */
-            }
-
-            .nav-link {
-                font-size: 0.9rem;
-                padding: 0.8rem 1.2rem !important;
-            }
-
-            footer {
-                font-size: 0.8rem;
-                padding: 1.2rem 0;
-            }
-
-            .navbar-collapse {
+            
+            .admin-header {
                 padding: 1.5rem;
+                text-align: center;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.5rem;
+                justify-content: center;
+            }
+            
+            .btn-group .btn {
+                padding: 0.5rem;
+                margin: 0.1rem;
+            }
+            
+            .table-responsive {
+                border-radius: 0.75rem;
             }
         }
-
-        @media (max-width: 576px) {
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
-
-            .navbar .container {
-                padding-left: 20px; /* Slightly more padding for mobile */
-                padding-right: 20px;
-            }
-
-            .navbar-collapse {
-                padding: 1rem;
-            }
+        
+        /* Loading spinner */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
         }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
+        
+        /* Modal enhancements */
+        .modal-content {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.175);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 1rem 1rem;
         }
     </style>
+    @stack('styles')
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('products.index') }}">Admin Dashboard</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- Admin Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-admin sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="{{ route('products.index') }}">
+                <i class="bi bi-speedometer2"></i>
+                Admin Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('products.index') }}">Manage Products</a>
+                        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" 
+                           href="{{ route('products.index') }}">
+                            <i class="bi bi-box-seam"></i>
+                            Products
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('users.index') }}">Manage Users</a>
+                        <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" 
+                           href="{{ route('users.index') }}">
+                            <i class="bi bi-people"></i>
+                            Users
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/') }}">
+                            <i class="bi bi-house"></i>
+                            Back to Store
+                        </a>
                     </li>
                     <li class="nav-item">
                         <form method="POST" action="{{ route('logout') }}" class="d-inline">
                             @csrf
-                            <button type="submit" class="logout-btn">Logout</button>
+                            <button type="submit" class="logout-btn">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </button>
                         </form>
                     </li>
                 </ul>
@@ -471,17 +425,99 @@
         </div>
     </nav>
 
-    <main class="container py-4">
+    <!-- Flash Messages -->
+    @if(session('success') || session('error') || session('warning') || session('info'))
+        <div class="container-fluid px-4 mt-3">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ session('warning') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if(session('info'))
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle-fill"></i>
+                    {{ session('info') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+        </div>
+    @endif
+
+    <!-- Main Content -->
+    <main class="@yield('main-class', 'container-fluid px-4')">
         @yield('content')
     </main>
 
+    <!-- Footer -->
     <footer class="text-center">
         <div class="container">
-            <p class="mb-0">&copy; 2025 Your Store. All Rights Reserved.</p>
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start">
+                    <p class="mb-0">&copy; 2025 Project Store Admin. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-light">Built with ❤️ using Laravel & Bootstrap</small>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Auto-hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+
+        // Add loading state to forms
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener('submit', function() {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn && !submitBtn.hasAttribute('data-no-loading')) {
+                    submitBtn.disabled = true;
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+                    
+                    // Re-enable after 3 seconds as fallback
+                    setTimeout(function() {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }, 3000);
+                }
+            });
+        });
+
+        // Confirmation dialogs for delete actions
+        function confirmDelete(message = 'Are you sure you want to delete this item?') {
+            return confirm(message);
+        }
+    </script>
+    
+    @stack('scripts')
 </body>
 </html>
