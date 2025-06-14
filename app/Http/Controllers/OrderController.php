@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class OrderController extends Controller
 {
@@ -15,7 +17,7 @@ class OrderController extends Controller
                       ->with('product')
                       ->orderBy('created_at', 'desc')
                       ->get();
-        
+
         return view('user.order.index', compact('orders'));
     }
 
@@ -25,7 +27,7 @@ class OrderController extends Controller
                       ->with('product')
                       ->orderBy('updated_at', 'desc')
                       ->get();
-        
+
         return view('user.order.history', compact('orders'));
     }
 
@@ -43,7 +45,13 @@ class OrderController extends Controller
 
         $product = Product::findOrFail($request->product_id);
         $quantity = $request->quantity;
-        
+
+        // Validasi stock menggunakan helper method
+        if (!$product->hasStock($quantity)) {
+            return redirect()->back()
+                           ->with('error', "Stock tidak mencukupi untuk {$product->name}. Stock tersedia: {$product->stock}");
+        }
+
         // Calculate total price
         $totalPrice = $this->calculateTotalPrice($product->price, $quantity);
 
@@ -68,36 +76,61 @@ class OrderController extends Controller
         ]);
 
         $orderIds = $request->order_ids;
-        
-        // Get orders that belong to the authenticated user and are pending
-        $orders = Order::whereIn('id', $orderIds)
-                      ->where('user_id', Auth::id())
-                      ->where('status', 'pending')
-                      ->get();
 
-        if ($orders->isEmpty()) {
+        // Start database transaction
+        DB::beginTransaction();
+
+        try {
+            // Get orders that belong to the authenticated user and are pending
+            $orders = Order::whereIn('id', $orderIds)
+                          ->where('user_id', Auth::id())
+                          ->where('status', 'pending')
+                          ->with('product') // Load product relation
+                          ->get();
+
+            if ($orders->isEmpty()) {
+                throw new Exception('No valid pending orders found.');
+            }
+
+            // Validate stock availability for all orders
+            foreach ($orders as $order) {
+                $product = $order->product;
+                
+                if (!$product->hasStock($order->quantity)) {
+                    throw new Exception("Stock tidak mencukupi untuk {$product->name}. Stock tersedia: {$product->stock}, diminta: {$order->quantity}");
+                }
+            }
+
+            // Calculate total amount
+            $totalAmount = $orders->sum('total_price');
+
+            // Process each order: update status and reduce stock
+            foreach ($orders as $order) {
+                // Update order status to paid using helper method
+                $order->markAsPaid();
+
+                // Reduce product stock using helper method
+                $order->product->reduceStock($order->quantity);
+
+                // Optional: Log stock reduction for audit trail
+                \Log::info("Stock reduced for product {$order->product->name}: -{$order->quantity}, remaining: {$order->product->fresh()->stock}");
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            $orderCount = $orders->count();
+
             return redirect()->route('user.order.index')
-                           ->with('error', 'No valid pending orders found.');
+                           ->with('success', "Payment successful! {$orderCount} order(s) totaling $" . number_format($totalAmount, 2) . " have been paid. Stock has been updated.");
+
+        } catch (Exception $e) {
+            // Rollback the transaction on any error
+            DB::rollback();
+            
+            return redirect()->route('user.order.index')
+                           ->with('error', 'Payment failed: ' . $e->getMessage());
         }
-
-        // Calculate total amount
-        $totalAmount = $orders->sum('total_price');
-
-        // Here you would integrate with your payment gateway
-        // For now, we'll simulate a successful payment
-        
-        // Update order status to paid
-        $orders->each(function ($order) {
-            $order->update([
-                'status' => 'paid',
-                'updated_at' => now()
-            ]);
-        });
-
-        $orderCount = $orders->count();
-        
-        return redirect()->route('user.order.index')
-                        ->with('success', "Payment successful! {$orderCount} order(s) totaling $" . number_format($totalAmount, 2) . " have been paid.");
     }
 
     /**

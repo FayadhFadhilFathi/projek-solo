@@ -40,8 +40,8 @@
     <div class="container">
         <div class="row py-5">
             <div class="col-12 text-center">
-                <h2 class="display-5 fw-bold text-primary mb-3">Selamat Datang di Equipbuild</h2>
-                <p class="lead text-muted">Kami menyediakan berbagai alat dan bahan bangunan berkualitas tinggi untuk kebutuhan Anda!</p>
+                <h2 class="display-5 fw-bold text-primary mb-3">Selamat Datang di Project Store</h2>
+                <p class="lead text-muted">Kami menyediakan berbagai Game dan Console berkualitas tinggi untuk kebutuhan Anda!</p>
             </div>
         </div>
 
