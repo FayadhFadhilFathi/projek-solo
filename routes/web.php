@@ -12,9 +12,19 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
 use Illuminate\Auth\Middleware\Authenticate;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReviewController; // Tambahkan ini
+use App\Http\Controllers\AdminReviewController; // Tambahkan ini
+use App\Http\Controllers\AnalyticsController; // Tambahkan ini
 
 // Home route
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Authentication routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes that require authentication
 Route::middleware([Authenticate::class])->group(function () {
@@ -27,19 +37,25 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
         Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
         Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
-        
+
         // Admin download route
         Route::get('/products/{product}/download', [ProductController::class, 'download'])
              ->name('products.download');
 
         // Admin dashboard
         Route::get('/admin/dashboard', function () {
-            $users = \App\Models\User::all();
-            return view('admin.dashboard', compact('users'));
+            return view('admin.dashboard'); // Hanya tampilkan dashboard navigasi
         })->name('admin.dashboard');
 
         // User management
         Route::resource('users', UserController::class);
+
+        // Review management
+        Route::get('/reviews', [AdminReviewController::class, 'index'])->name('admin.reviews.index');
+        Route::put('/reviews/{review}', [AdminReviewController::class, 'update'])->name('admin.reviews.update');
+        
+        // Analytics dashboard
+        Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('admin.analytics.dashboard');
     });
 
     // User order routes
@@ -51,6 +67,10 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
         Route::delete('/{id}/remove', [OrderController::class, 'remove'])->name('user.order.remove');
         Route::post('/remove-bulk', [OrderController::class, 'removeBulk'])->name('user.order.remove.bulk');
+        Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+        
+        // User review routes - tambahkan di sini
+        Route::post('/{order}/review', [ReviewController::class, 'store'])->name('user.review.store');
     });
 
     // User download route
@@ -66,10 +86,3 @@ Route::middleware([Authenticate::class])->group(function () {
         return view('user.dashboard', compact('products'));
     })->name('dashboard');
 });
-
-// Authentication routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

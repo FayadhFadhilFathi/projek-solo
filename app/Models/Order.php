@@ -76,4 +76,8 @@ class Order extends Model
     {
         return 'Rp ' . number_format($this->total_price, 0, ',', '.');
     }
+    public function review()
+{
+    return $this->hasOne(Review::class);
+}
 }

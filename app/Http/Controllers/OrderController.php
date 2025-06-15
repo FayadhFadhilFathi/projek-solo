@@ -64,7 +64,7 @@ class OrderController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->route('user.order.index')
+        return redirect()->route('dashboard')
                         ->with('success', 'Order placed successfully!');
     }
 

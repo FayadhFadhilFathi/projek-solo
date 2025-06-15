@@ -332,6 +332,146 @@
         text-decoration: none;
     }
 
+    /* Review Section Styles */
+    .review-section {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9f9ff;
+        border-radius: 10px;
+        border-left: 3px solid #667eea;
+    }
+
+    .review-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .review-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .review-form {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+
+    .review-form.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        font-size: 1.5rem;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .star-rating input:checked ~ label,
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: #ffc107;
+    }
+
+    .star-rating input:checked + label {
+        color: #ffc107;
+    }
+
+    .review-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        resize: vertical;
+    }
+
+    .review-submit-btn {
+        background: linear-gradient(135deg, #00b894, #00cec9);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .review-submit-btn:hover {
+        background: linear-gradient(135deg, #00cec9, #00b894);
+    }
+
+    .review-display {
+        margin-top: 15px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        border-left: 3px solid #ffc107;
+    }
+
+    .review-stars {
+        color: #ffc107;
+        margin-bottom: 5px;
+    }
+
+    .review-comment {
+        margin-bottom: 10px;
+        font-style: italic;
+    }
+
+    .review-status {
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+    .badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+    .bg-success {
+        background-color: #00b894;
+        color: white;
+    }
+
+    .bg-warning {
+        background-color: #fdcb6e;
+        color: #333;
+    }
+
+    .bg-danger {
+        background-color: #e17055;
+        color: white;
+    }
+
     @keyframes fadeInUp {
         from {
             opacity: 0;
@@ -363,6 +503,11 @@
             opacity: 1;
             transform: translateX(0);
         }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     @media (max-width: 768px) {
@@ -397,11 +542,38 @@
             flex-direction: column;
         }
     }
+
+    .star-rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.star-rating-input input {
+    display: none;
+}
+
+.star-rating-input label {
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating-input input:checked ~ label,
+.star-rating-input label:hover,
+.star-rating-input label:hover ~ label {
+    color: #ffc107;
+}
+
+.star-rating-input input:checked + label {
+    color: #ffc107;
+}
 </style>
 
 <div class="orders-page">
     <div class="orders-header">
-        <h1>📜 Order History</h1>
+        <h1>📝 Order History</h1>
         <p>View your completed and processed orders</p>
     </div>
 
@@ -412,7 +584,7 @@
                 📋 Pending Orders
             </a>
             <a href="{{ route('user.order.history') }}" class="tab-btn {{ request()->routeIs('user.order.history') ? 'active' : '' }}">
-                📜 Order History
+                📝 Order History
             </a>
         </div>
 
@@ -461,7 +633,8 @@
                 </div>
                 <div class="filter-group">
                     <label class="filter-label">Search Product</label>
-                    <input type="text" class="filter-input" id="searchFilter" placeholder="Search by product name..." onkeyup="filterOrders()">
+                    <input type="text" class="filter-input" id="searchFilter" placeholder="Search by product name..."
+                    onkeyup="filterOrders()">
                 </div>
             </div>
 
@@ -474,7 +647,7 @@
                         data-product="{{ strtolower($order->product->name) }}">
                         <div class="order-header">
                             <div class="product-name">
-                                🎮 {{ $order->product->name }}
+                                🎵 {{ $order->product->name }}
                             </div>
                             <div class="status-badge status-{{ $order->status }}">
                                 {{ ucfirst($order->status) }}
@@ -505,7 +678,7 @@
                             </div>
                         @elseif($order->status === 'processing')
                             <div class="payment-info">
-                                🛠️ Your order is being processed
+                                ⚙ Your order is being processed
                             </div>
                         @elseif($order->status === 'shipped')
                             <div class="payment-info">
@@ -513,17 +686,71 @@
                             </div>
                         @elseif($order->status === 'delivered')
                             <div class="payment-info">
-                                ✅ Order delivered on {{ $order->updated_at->format('M d, Y') }}
+                                ✔ Order delivered on {{ $order->updated_at->format('M d, Y') }}
                             </div>
                         @endif
-                        
+
                         {{-- TOMBOL DOWNLOAD --}}
                         @if($order->isPaid() && $order->product->download_file)
                             <div class="mt-3 text-center">
-                                <a href="{{ route('download.file', $order->id) }}" 
+                                <a href="{{ route('download.file', $order->id) }}"
                                 class="btn btn-success btn-sm">
                                     <i class="fas fa-download me-1"></i> Download File
                                 </a>
+                            </div>
+                        @endif
+
+                        {{-- REVIEW SECTION --}}
+                        @if($order->status === 'delivered')
+                            <div class="review-section">
+                                @if($order->review)
+                                    <div class="review-display">
+                                        <div class="review-stars">
+                                            @for($i = 0; $i < 5; $i++)
+                                                @if($i < $order->review->rating)
+                                                    <i class="fas fa-star"></i>
+                                                @else
+                                                    <i class="far fa-star"></i>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <div class="review-comment">
+                                            {{ $order->review->comment }}
+                                        </div>
+                                        <div class="review-status">
+                                            Status: 
+                                            <span class="badge bg-{{ $order->review->status === 'approved' ? 'success' : ($order->review->status === 'rejected' ? 'danger' : 'warning') }}">
+                                                {{ ucfirst($order->review->status) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @else
+                                    <button class="review-btn" onclick="toggleReviewForm({{ $order->id }})">
+                                        <i class="fas fa-star me-1"></i> Write Review
+                                    </button>
+                                    {{-- Review Form --}}
+                                    <div id="reviewForm-{{ $order->id }}" class="review-form">
+                                        <form action="{{ route('user.review.store', $order->id) }}" method="POST">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label class="form-label">Rating</label>
+                                                <div class="star-rating-input">
+                                                    @for($i = 5; $i >= 1; $i--)
+                                                        <input type="radio" id="star-{{ $order->id }}-{{ $i }}" name="rating" value="{{ $i }}" {{ $i == 5 ? 'checked' : '' }}>
+                                                        <label for="star-{{ $order->id }}-{{ $i }}"><i class="fas fa-star"></i></label>
+                                                    @endfor
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Review</label>
+                                                <textarea name="comment" class="form-control review-textarea" 
+                                                        placeholder="Share your experience with this product..." 
+                                                        required rows="3"></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                                        </form>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -532,7 +759,7 @@
         @else
             <!-- Empty State -->
             <div class="empty-state">
-                <div class="empty-icon">📜</div>
+                <div class="empty-icon">📝</div>
                 <div class="empty-message">No order history yet!</div>
                 <div class="empty-submessage">Complete some purchases to see your order history here</div>
                 <a href="{{ route('user.order.index') }}" class="back-btn">
@@ -555,26 +782,26 @@ function filterOrders() {
     const dateFilter = document.getElementById('dateFilter').value;
     const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
     const orders = document.querySelectorAll('.order-card');
-    
+
     orders.forEach(order => {
         let showOrder = true;
-        
+
         // Status filter
         if (statusFilter && order.dataset.status !== statusFilter) {
             showOrder = false;
         }
-        
+
         // Search filter
         if (searchFilter && !order.dataset.product.includes(searchFilter)) {
             showOrder = false;
         }
-        
+
         // Date filter
         if (dateFilter) {
             const orderDate = new Date(order.dataset.date);
             const now = new Date();
             let showByDate = false;
-            
+
             switch(dateFilter) {
                 case 'today':
                     showByDate = orderDate.toDateString() === now.toDateString();
@@ -590,43 +817,63 @@ function filterOrders() {
                     showByDate = orderDate.getFullYear() === now.getFullYear();
                     break;
             }
-            
+
             if (!showByDate) {
                 showOrder = false;
             }
         }
-        
+
         order.style.display = showOrder ? 'block' : 'none';
     });
 }
-</script>
+
+function toggleReviewForm(orderId) {
+    const form = document.getElementById(`reviewForm-${orderId}`);
+    form.classList.toggle('active');
+}
 
 @if(session('success'))
-    <script>
-        // Modern notification
-        const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 1000; animation: slideInRight 0.5s ease-out;">
-                ✅ {{ session('success') }}
-            </div>
-        `;
-        document.body.appendChild(notification);
+    // Modern notification
+    const notification = document.createElement('div');
+    notification.innerHTML = `
+        <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #00b894, #00cec9); color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 1000; animation: slideInRight 0.5s ease-out;">
+            ✓ {{ session('success') }}
+        </div>
+    `;
+    document.body.appendChild(notification);
 
-        setTimeout(() => {
-            notification.style.animation = 'slideOutRight 0.5s ease-out';
-            setTimeout(() => notification.remove(), 500);
-        }, 3000);
-    </script>
-
-    <style>
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-    </style>
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease-out';
+        setTimeout(() => notification.remove(), 500);
+    }, 3000);
 @endif
+
+@if(session('error'))
+    // Error notification
+    const errorNotification = document.createElement('div');
+    errorNotification.innerHTML = `
+        <div style="position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 1000; animation: slideInRight 0.5s ease-out;">
+            ✗ {{ session('error') }}
+        </div>
+    `;
+    document.body.appendChild(errorNotification);
+
+    setTimeout(() => {
+        errorNotification.style.animation = 'slideOutRight 0.5s ease-out';
+        setTimeout(() => errorNotification.remove(), 500);
+    }, 3000);
+@endif
+</script>
+
+<style>
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+</style>
 @endsection

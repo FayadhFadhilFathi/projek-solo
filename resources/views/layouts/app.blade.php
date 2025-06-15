@@ -31,36 +31,107 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Custom Navbar Styling */
-        .navbar-custom {
-            background: linear-gradient(135deg, var(--primary-color), #5a32a3);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+/* Enhanced Navbar Styling */
+.navbar-custom {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    border-bottom: 3px solid #5a32a3;
+}
 
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white !important;
-        }
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: white !important;
+}
 
-        .navbar-nav .nav-link {
-            color: rgba(255,255,255,0.9) !important;
-            font-weight: 500;
-            margin: 0 0.25rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-        }
+.navbar-nav .nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: 500;
+    margin: 0 0.25rem;
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
 
-        .navbar-nav .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white !important;
-        }
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255,255,255,0.15);
+    color: white !important;
+    transform: translateY(-1px);
+}
 
-        .btn-outline-light:hover {
-            background-color: white;
-            color: var(--primary-color) !important;
-        }
+.navbar-nav .nav-link.active {
+    background-color: rgba(255,255,255,0.2);
+    color: white !important;
+}
 
+/* Avatar Circle */
+.avatar-circle-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #6f42c1, #5a32a3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 0.15rem 0;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(111, 66, 193, 0.1);
+}
+
+/* Search Bar */
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Cart Badge */
+.badge {
+    font-size: 0.6rem;
+    padding: 0.25rem 0.4rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .navbar-nav {
+        padding-top: 1rem;
+    }
+    
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+    
+    .dropdown-menu {
+        margin-left: 1rem;
+        width: calc(100% - 2rem);
+    }
+}
         /* Card Enhancements */
         .card {
             border: none;
@@ -165,92 +236,159 @@
     @stack('styles')
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                <i class="bi bi-shop me-2"></i>
-                Project Store
-            </a>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+            <i class="bi bi-shop me-2"></i>
+            <span class="fw-bold">Project Store</span>
+        </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">
-                            <i class="bi bi-house me-1"></i>Home
-                        </a>
-                    </li>
-                    
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" 
-                                   href="{{ route('products.index') }}">
-                                    <i class="bi bi-speedometer2 me-1"></i>Admin Dashboard
-                                </a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('user.order.*') ? 'active' : '' }}" 
-                                   href="{{ route('user.order.index') }}">
-                                    <i class="bi bi-bag me-1"></i>My Orders
-                                </a>
-                            </li>
-                        @endif
-                    @endauth
-                </ul>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Home -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">
+                        <i class="bi bi-house-door me-1"></i>Home
+                    </a>
+                </li>
 
-                <ul class="navbar-nav">
-                    @auth
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" 
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i>
-                                {{ auth()->user()->name }}
+                <!-- Products Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('products.*') ? 'active' : '' }}" 
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-box-seam me-1"></i>Products
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-collection me-2"></i>All Products
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-person me-2"></i>Profile
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-gear me-2"></i>Settings
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-tags me-2"></i>Categories
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-stars me-2"></i>Featured
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Special Offers -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-percent me-1"></i>Special Offers
+                    </a>
+                </li>
+
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        <!-- Admin Dashboard Link -->
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                               href="{{ route('products.index') }}">
+                                <i class="bi bi-speedometer2 me-1"></i>Admin Panel
+                            </a>
                         </li>
                     @else
+                        <!-- My Orders -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">
-                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            <a class="nav-link {{ request()->routeIs('user.order.*') ? 'active' : '' }}"
+                               href="{{ route('user.order.index') }}">
+                                <i class="bi bi-bag me-1"></i>My Orders
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm ms-2" href="{{ route('register') }}">
-                                <i class="bi bi-person-plus me-1"></i>Register
-                            </a>
-                        </li>
-                    @endauth
-                </ul>
-            </div>
+                    @endif
+                @endauth
+            </ul>
+
+            <ul class="navbar-nav">
+                <!-- Search Bar -->
+                <li class="nav-item me-2">
+                    <form class="d-flex">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+                            <button class="btn btn-light" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+
+                <!-- Cart -->
+                <li class="nav-item me-2">
+                    <a class="nav-link position-relative" href="#">
+                        <i class="bi bi-cart3"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            3
+                        </span>
+                    </a>
+                </li>
+
+                @auth
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button"
+                           data-bs-toggle="dropdown">
+                            <div class="avatar-circle-sm me-2">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                            </div>
+                            {{ auth()->user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person me-2"></i>Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-heart me-2"></i>Wishlist
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-gear me-2"></i>Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <!-- Login/Register -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-light" href="{{ route('register') }}">
+                            <i class="bi bi-person-plus me-1"></i>Register
+                        </a>
+                    </li>
+                @endauth
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Flash Messages -->
     @if(session('success') || session('error') || session('warning') || session('info'))

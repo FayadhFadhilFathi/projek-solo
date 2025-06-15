@@ -3,221 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Register | Project Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        /* Reset dan Base Styles */
-        /* Reset dan Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        :root {
+            --primary-color: #6f42c1;
+            --primary-light: #8a63d2;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5dc; /* Warna krem seperti di foto */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f9ff, #f0f0ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-/* Container Form */
-.form-container {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #e0e0e0;
-}
+        .auth-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            position: relative;
+        }
 
-/* Header */
-h2 {
-    text-align: center;
-    color: #8B4513; /* Warna coklat seperti di foto */
-    margin-bottom: 30px;
-    font-size: 1.8em;
-    font-weight: 600;
-}
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
 
-/* Error Messages */
-.error-messages {
-    background-color: #fee;
-    border: 1px solid #fcc;
-    color: #c66;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
+        .auth-header h2 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-.error-messages ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
 
-.error-messages li {
-    margin-bottom: 5px;
-    font-size: 14px;
-}
+        .auth-body {
+            padding: 2rem;
+        }
 
-/* Form Labels */
-label {
-    display: block;
-    margin-bottom: 8px;
-    margin-top: 15px;
-    color: #666;
-    font-weight: 500;
-    font-size: 14px;
-}
+        .form-floating label {
+            color: var(--secondary-color);
+        }
 
-/* Form Inputs */
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: #fff;
-    outline: none;
-    margin-bottom: 10px;
-}
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border-color: #8B4513;
-    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
-}
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+        }
 
-input[type="text"]:hover,
-input[type="email"]:hover,
-input[type="password"]:hover {
-    border-color: #8B4513;
-}
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border: none;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
 
-/* Button */
-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #8B4513; /* Warna coklat seperti di foto */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
 
-button:hover {
-    background-color: #A0522D;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-}
+        .auth-footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
 
-button:active {
-    transform: translateY(0);
-}
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    .form-container {
-        padding: 30px 20px;
-        margin: 10px;
-    }
-    
-    h2 {
-        font-size: 1.5em;
-    }
-}
+        .auth-footer a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
 
-/* Login Link */
-.login-link {
-    text-align: center;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
 
-.login-link p {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease;
+        }
 
-.login-link a {
-    color: #8B4513;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
+        .strength-weak {
+            background-color: #dc3545;
+            width: 33%;
+        }
 
-.login-link a:hover {
-    color: #A0522D;
-    text-decoration: underline;
-}
+        .strength-medium {
+            background-color: #ffc107;
+            width: 66%;
+        }
 
-/* Animation */
-.form-container {
-    animation: fadeInUp 0.6s ease-out;
-}
+        .strength-strong {
+            background-color: #28a745;
+            width: 100%;
+        }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        .password-hints {
+            font-size: 0.75rem;
+            color: var(--secondary-color);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+                background: white;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.6s ease-out;
+        }
     </style>
 </head>
 <body>
-<div class="form-container">
-    <h2>Register</h2>
-    
-    @if ($errors->any())
-        <div class="error-messages">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2><i class="bi bi-person-plus"></i> Create Account</h2>
+            <p>Join our community today</p>
         </div>
-    @endif
 
-    <form action="{{ route('register') }}" method="POST">
-        @csrf
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" value="{{ old('name') }}" required>
+        <div class="auth-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ old('email') }}" required>
+            <form action="{{ route('register') }}" method="POST">
+                @csrf
+                
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" value="{{ old('name') }}" required>
+                    <label for="name">Full Name</label>
+                </div>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                    <label for="email">Email address</label>
+                </div>
 
-        <label for="password_confirmation">Confirm Password:</label>
-        <input type="password" name="password_confirmation" id="password_confirmation" required>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required oninput="checkPasswordStrength(this.value)">
+                    <label for="password">Password</label>
+                    <div class="password-strength">
+                        <div class="strength-meter" id="strengthMeter"></div>
+                    </div>
+                    <div class="password-hints">
+                        <small>Use 8+ characters with a mix of letters, numbers & symbols</small>
+                    </div>
+                </div>
 
-        <button type="submit">Register</button>
-    </form>
-    
-    <!-- Text untuk mengarahkan ke halaman login -->
-    <div class="login-link">
-        <p>Already have an account?</p>
-        <a href="{{ route('login') }}">Login here</a>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password" required>
+                    <label for="password_confirmation">Confirm Password</label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-auth btn-primary w-100">Create Account</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            Already have an account? <a href="{{ route('login') }}">Sign in</a>
+        </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function checkPasswordStrength(password) {
+            const strengthMeter = document.getElementById('strengthMeter');
+            let strength = 0;
+            
+            // Check length
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Check for mixed case
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) strength++;
+            
+            // Check for numbers
+            if (password.match(/[0-9]/)) strength++;
+            
+            // Check for special chars
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            // Update meter
+            strengthMeter.className = 'strength-meter';
+            if (password.length > 0) {
+                if (strength <= 2) {
+                    strengthMeter.classList.add('strength-weak');
+                } else if (strength <= 4) {
+                    strengthMeter.classList.add('strength-medium');
+                } else {
+                    strengthMeter.classList.add('strength-strong');
+                }
+            }
+        }
+    </script>
 </body>
 </html>

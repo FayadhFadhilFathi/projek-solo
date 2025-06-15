@@ -14,40 +14,40 @@
         overflow: hidden;
         border-radius: 0.75rem 0.75rem 0 0;
     }
-    
+
     .product-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.3s ease;
     }
-    
+
     .card:hover .product-image img {
         transform: scale(1.05);
     }
-    
+
     .price-badge {
         background: linear-gradient(45deg, #28a745, #20c997);
         color: white;
         font-weight: 600;
         border-radius: 50px;
     }
-    
+
     .stock-badge {
         border-radius: 50px;
     }
-    
+
     .product-card {
         transition: all 0.3s ease;
         border: none;
         box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
     }
-    
+
     .product-card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
         transform: translateY(-5px);
     }
-    
+
     .btn-buy {
         background: linear-gradient(45deg, #6f42c1, #5a32a3);
         border: none;
@@ -55,13 +55,13 @@
         font-weight: 500;
         transition: all 0.3s ease;
     }
-    
+
     .btn-buy:hover {
         background: linear-gradient(45deg, #5a32a3, #6f42c1);
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(111, 66, 193, 0.3);
     }
-    
+
     .btn-cart {
         background: linear-gradient(45deg, #fd7e14, #e76500);
         border: none;
@@ -69,13 +69,13 @@
         font-weight: 500;
         transition: all 0.3s ease;
     }
-    
+
     .btn-cart:hover {
         background: linear-gradient(45deg, #e76500, #fd7e14);
         transform: translateY(-1px);
         box-shadow: 0 4px 8px rgba(253, 126, 20, 0.3);
     }
-    
+
     .welcome-section {
         background: linear-gradient(135deg, #6f42c1, #5a32a3);
         color: white;
@@ -85,7 +85,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .welcome-section::before {
         content: '';
         position: absolute;
@@ -97,34 +97,108 @@
         border-radius: 50%;
         transform: scale(3);
     }
-    
+
     .stats-card {
         background: linear-gradient(135deg, #f8f9fa, #e9ecef);
         border: none;
         border-radius: 1rem;
         transition: all 0.3s ease;
     }
-    
+
     .stats-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
     }
-    
+
     .loading-spinner {
         display: none;
     }
-    
+
     .loading .loading-spinner {
         display: inline-block;
     }
-    
+
     .loading .btn-text {
         display: none;
     }
+
+    /* Notification styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-out 2.5s forwards;
+    }
+
+    .notification-success {
+        background: linear-gradient(135deg, #00b894, #00cec9);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .notification-error {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    .star-rating {
+    display: inline-block;
+    color: #ffc107;
+    font-size: 0.9rem;
+}
+
+.star-rating.small {
+    font-size: 0.8rem;
+}
+
+.star-rating i {
+    margin-right: 1px;
+}
 </style>
 @endpush
 
 @section('content')
+<!-- Notification Container -->
+@if(session('success'))
+    <div class="notification">
+        <div class="notification-success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ session('success') }}
+        </div>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="notification">
+        <div class="notification-error">
+            <i class="bi bi-x-circle-fill"></i>
+            {{ session('error') }}
+        </div>
+    </div>
+@endif
+
 <!-- Welcome Section -->
 <div class="welcome-section text-center position-relative">
     <div class="position-relative">
@@ -229,10 +303,14 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-dark mb-2">{{ $product->name }}</h5>
-                            
+                            <h5 class="card-title fw-bold text-dark mb-2">
+                                <a href="{{ route('products.show', $product->id) }}" class="text-decoration-none text-dark">
+                                    {{ $product->name }}
+                                </a>
+                            </h5>
+
                             <div class="mb-3">
                                 <span class="badge price-badge fs-6 me-2">
                                     ${{ number_format($product->price, 2) }}
@@ -249,20 +327,36 @@
                                     </span>
                                 @endif
                             </div>
-                            
+                            @if($product->reviewsCount() > 0)
+                                <div class="mb-2">
+                                    <div class="star-rating small">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $product->averageRating())
+                                                <i class="fas fa-star text-warning"></i>
+                                            @elseif($i - 0.5 <= $product->averageRating())
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-warning"></i>
+                                            @endif
+                                        @endfor
+                                        <small class="text-muted">({{ $product->reviewsCount() }})</small>
+                                    </div>
+                                </div>
+                            @endif
+
                             @if($product->description)
                                 <p class="card-text text-muted small mb-3">
                                     {{ Str::limit($product->description, 80) }}
                                 </p>
                             @endif
-                            
+
                             <div class="mt-auto">
                                 @if($product->stock > 0)
                                     <form action="{{ route('user.order.store') }}" method="POST" class="purchase-form">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
-                                        
+
                                         <div class="d-grid gap-2">
                                             <button type="submit" class="btn btn-buy btn-primary">
                                                 <span class="loading-spinner spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
@@ -309,10 +403,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Search functionality
     const searchInput = document.getElementById('searchProducts');
     const productItems = document.querySelectorAll('.product-item');
-    
+
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        
+
         productItems.forEach(function(item) {
             const productName = item.getAttribute('data-name');
             if (productName.includes(searchTerm)) {
@@ -323,11 +417,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 item.classList.remove('fade-in');
             }
         });
-        
+
         // Show "no results" message if needed
         const visibleItems = Array.from(productItems).filter(item => item.style.display !== 'none');
         const noResultsMsg = document.getElementById('noResultsMessage');
-        
+
         if (visibleItems.length === 0 && searchTerm !== '') {
             if (!noResultsMsg) {
                 const message = document.createElement('div');
@@ -344,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
             noResultsMsg.remove();
         }
     });
-    
+
     // Form submission with loading state
     const purchaseForms = document.querySelectorAll('.purchase-form');
     purchaseForms.forEach(function(form) {
@@ -352,9 +446,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
+            
+            // Save scroll position before redirect
+            sessionStorage.setItem('scrollPosition', window.scrollY);
         });
     });
-    
+
+    // Restore scroll position after page load
+    const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+    if (savedScrollPosition) {
+        window.scrollTo(0, parseInt(savedScrollPosition));
+        sessionStorage.removeItem('scrollPosition');
+    }
+
     // Smooth scroll to products
     window.scrollToProducts = function() {
         document.getElementById('products-section').scrollIntoView({
@@ -362,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
             block: 'start'
         });
     };
-    
+
     // View mode toggle (placeholder for future implementation)
     const viewModeInputs = document.querySelectorAll('input[name="viewMode"]');
     viewModeInputs.forEach(function(input) {
@@ -376,6 +480,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Auto-hide notifications after 3 seconds
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    });
 });
 
 // Add fade-in animation class
@@ -384,7 +497,7 @@ style.textContent = `
     .fade-in {
         animation: fadeIn 0.3s ease-in;
     }
-    
+
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -392,4 +505,4 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 </script>
-@endpush
+@endpush 

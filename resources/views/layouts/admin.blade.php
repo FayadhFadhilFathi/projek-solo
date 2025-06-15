@@ -372,58 +372,180 @@
             border-top: 1px solid #dee2e6;
             border-radius: 0 0 1rem 1rem;
         }
+
+        /* Dropdown menu styling */
+.dropdown-menu {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    margin: 0.15rem 0;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(111, 66, 193, 0.1);
+}
+
+.dropdown-item:active {
+    background-color: var(--admin-primary);
+}
+
+/* User dropdown styling */
+.navbar-nav .dropdown-menu {
+    min-width: 200px;
+}
+
+/* Active dropdown toggle */
+.nav-link.dropdown-toggle.active {
+    background-color: rgba(255,255,255,0.2);
+}
     </style>
     @stack('styles')
 </head>
 <body>
     <!-- Admin Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-admin sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="{{ route('products.index') }}">
-                <i class="bi bi-speedometer2"></i>
-                Admin Dashboard
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}" 
-                           href="{{ route('products.index') }}">
-                            <i class="bi bi-box-seam"></i>
-                            Products
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" 
-                           href="{{ route('users.index') }}">
-                            <i class="bi bi-people"></i>
-                            Users
-                        </a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">
-                            <i class="bi bi-house"></i>
-                            Back to Store
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                            @csrf
-                            <button type="submit" class="logout-btn">
-                                <i class="bi bi-box-arrow-right"></i>
-                                Logout
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-admin sticky-top">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="{{ route('admin.dashboard') }}">
+            <i class="bi bi-speedometer2"></i>
+            Admin Panel
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                       href="{{ route('admin.dashboard') }}">
+                        <i class="bi bi-house-door"></i>
+                        Dashboard
+                    </a>
+                </li>
+                
+                <!-- Products -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('products.*') ? 'active' : '' }}" 
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-box-seam"></i>
+                        Products
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('products.index') }}">
+                                <i class="bi bi-list-ul me-2"></i>All Products
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('product.create') }}">
+                                <i class="bi bi-plus-circle me-2"></i>Add New
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-tags me-2"></i>Categories
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Users -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('users.*') ? 'active' : '' }}" 
+                       href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-people"></i>
+                        Users
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('users.index') }}">
+                                <i class="bi bi-list-ul me-2"></i>All Users
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('users.create') }}">
+                                <i class="bi bi-person-plus me-2"></i>Add New
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-shield-lock me-2"></i>Roles
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- Reviews -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}"
+                       href="{{ route('admin.reviews.index') }}">
+                        <i class="bi bi-star"></i>
+                        Reviews
+                    </a>
+                </li>
+                
+                <!-- Analytics -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}"
+                       href="{{ route('admin.analytics.dashboard') }}">
+                        <i class="bi bi-graph-up"></i>
+                        Analytics
+                    </a>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav">
+                <!-- Store Front -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/') }}" target="_blank">
+                        <i class="bi bi-shop"></i>
+                        View Store
+                    </a>
+                </li>
+                
+                <!-- User Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                        {{ Auth::user()->name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-person me-2"></i>Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="bi bi-gear me-2"></i>Settings
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Flash Messages -->
     @if(session('success') || session('error') || session('warning') || session('info'))

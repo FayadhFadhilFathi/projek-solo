@@ -83,4 +83,19 @@ class Product extends Model
     {
         return $query->where('stock', '<=', $threshold)->where('stock', '>', 0);
     }
+
+    public function reviews()
+{
+    return $this->hasMany(Review::class)->where('status', 'approved');
+}
+
+public function averageRating()
+{
+    return $this->reviews()->avg('rating') ?? 0;
+}
+
+public function reviewsCount()
+{
+    return $this->reviews()->count();
+}
 }

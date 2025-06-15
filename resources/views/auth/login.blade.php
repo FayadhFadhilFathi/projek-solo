@@ -3,233 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <style>/* Reset dan Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    <title>Login | Project Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #6f42c1;
+            --primary-light: #8a63d2;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5dc; /* Warna krem seperti di foto */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f9f9ff, #f0f0ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-/* Container Form */
-.form-container {
-    background: white;
-    border-radius: 15px;
-    padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    border: 1px solid #e0e0e0;
-}
+        .auth-container {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1rem 3rem rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            position: relative;
+        }
 
-/* Header */
-h2 {
-    text-align: center;
-    color: #8B4513; /* Warna coklat seperti di foto */
-    margin-bottom: 30px;
-    font-size: 1.8em;
-    font-weight: 600;
-}
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
 
-/* Error Messages */
-.error-messages {
-    background-color: #fee;
-    border: 1px solid #fcc;
-    color: #c66;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
+        .auth-header h2 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-.error-messages ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
 
-.error-messages li {
-    margin-bottom: 5px;
-    font-size: 14px;
-}
+        .auth-body {
+            padding: 2rem;
+        }
 
-/* Form Labels */
-label {
-    display: block;
-    margin-bottom: 8px;
-    margin-top: 15px;
-    color: #666;
-    font-weight: 500;
-    font-size: 14px;
-}
+        .form-floating label {
+            color: var(--secondary-color);
+        }
 
-/* Form Inputs */
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: #fff;
-    outline: none;
-    margin-bottom: 10px;
-}
+        .form-control {
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
 
-input[type="email"]:focus,
-input[type="password"]:focus {
-    border-color: #8B4513;
-    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1);
-}
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+        }
 
-input[type="email"]:hover,
-input[type="password"]:hover {
-    border-color: #8B4513;
-}
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            border: none;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
 
-/* Button */
-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #8B4513; /* Warna coklat seperti di foto */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
 
-button:hover {
-    background-color: #A0522D;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-}
+        .auth-footer {
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+        }
 
-button:active {
-    transform: translateY(0);
-}
+        .auth-footer a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
 
-/* Register Link */
-.register-link {
-    text-align: center;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
+        .auth-footer a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
 
-.register-link p {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+        }
 
-.register-link a {
-    color: #8B4513;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #eee;
+        }
 
-.register-link a:hover {
-    color: #A0522D;
-    text-decoration: underline;
-}
+        .divider::before {
+            margin-right: 1rem;
+        }
 
-/* Forgot Password Link */
-.forgot-password {
-    text-align: right;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
+        .divider::after {
+            margin-left: 1rem;
+        }
 
-.forgot-password a {
-    color: #8B4513;
-    text-decoration: none;
-    font-size: 13px;
-    transition: all 0.3s ease;
-}
+        .social-login {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
 
-.forgot-password a:hover {
-    color: #A0522D;
-    text-decoration: underline;
-}
+        .social-btn {
+            flex: 1;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    .form-container {
-        padding: 30px 20px;
-        margin: 10px;
-    }
-    
-    h2 {
-        font-size: 1.5em;
-    }
-}
+        .social-btn.google {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            color: #444;
+        }
 
-/* Animation */
-.form-container {
-    animation: fadeInUp 0.6s ease-out;
-}
+        .social-btn.facebook {
+            background-color: #3b5998;
+            color: white;
+        }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}</style>
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+
+        .forgot-password a {
+            color: var(--secondary-color);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+                background: white;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-container {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Login</h2>
-        
-        @if ($errors->any())
-            <div class="error-messages">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2><i class="bi bi-box-arrow-in-right"></i> Welcome Back</h2>
+            <p>Login to access your account</p>
+        </div>
+
+        <div class="auth-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
+                
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{{ old('email') }}" required>
+                    <label for="email">Email address</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-auth btn-primary w-100">Login</button>
+            </form>
+
+            <div class="divider">or continue with</div>
+
+            <div class="social-login">
+                <a href="#" class="social-btn google">
+                    <i class="bi bi-google"></i> Google
+                </a>
+                <a href="#" class="social-btn facebook">
+                    <i class="bi bi-facebook"></i> Facebook
+                </a>
             </div>
-        @endif
+        </div>
 
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="{{ old('email') }}" required>
-
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            
-            <!-- Optional: Forgot Password Link -->
-            <div class="forgot-password">
-                <a href="">Forgot Password?</a>
-            </div>
-
-            <button type="submit">Login</button>
-        </form>
-        
-        <!-- Link ke halaman register -->
-        <div class="register-link">
-            <p>Don't have an account?</p>
-            <a href="{{ route('register') }}">Register here</a>
+        <div class="auth-footer">
+            Don't have an account? <a href="{{ route('register') }}">Sign up</a>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

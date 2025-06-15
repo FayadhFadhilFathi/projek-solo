@@ -3,6 +3,11 @@
 @section('title', 'Product List')
 
 @section('content')
+<div class="mb-4">
+    <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-2"></i> Kembali ke Dashboard
+    </a>
+</div>
 <div class="container">
     <div class="admin-header">
         <h1 class="text-center mb-0">Product Management</h1>
@@ -35,7 +40,11 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title fw-bold">{{ $product->name }}</h5>
+                    <h5 class="card-title fw-bold">
+                        <a href="{{ route('products.show', $product->id) }}" class="text-decoration-none">
+                            {{ $product->name }}
+                        </a>
+                    </h5>
                     <p class="card-text text-truncate">{{ $product->description ?? 'No description available' }}</p>
                     <ul class="list-group list-group-flush mb-3">
                         <li class="list-group-item bg-transparent">
