@@ -10,15 +10,14 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        // Only admin can access create, store, edit, update, destroy
         $this->middleware('admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
-        $this->middleware('auth'); // All routes can only be accessed by logged-in users
+        $this->middleware('auth');
     }
 
     public function index()
     {
         $products = Product::all();
-        return view('products.index', compact('products'))->with('success', 'Get All Products');
+        return view('products.index', compact('products'));
     }
 
     public function create()
@@ -28,30 +27,26 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-    $validated = $request->validate([
-        // ... validasi lainnya
-        'download_file' => 'nullable|file',
-    ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image' => 'nullable|url',
+            'download_file' => 'nullable|file|max:102400', // 100MB max
+        ]);
 
-    $data = $request->all();
+        $data = $request->all();
 
-    if ($request->hasFile('download_file')) {
-        $file = $request->file('download_file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        
-        // Gunakan streaming untuk file besar
-        $stream = fopen($file->getRealPath(), 'r');
-        Storage::disk('public')->put('downloads/' . $fileName, $stream);
-        
-        if (is_resource($stream)) {
-            fclose($stream);
+        if ($request->hasFile('download_file')) {
+            $file = $request->file('download_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('downloads', $fileName, 'public');
+            $data['download_file'] = $path;
         }
-        
-        $data['download_file'] = 'downloads/' . $fileName;
-    }
 
-    Product::create($data);
-    return redirect()->route('products.index');
+        Product::create($data);
+        return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
 
     public function show(Product $product)
@@ -72,24 +67,24 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'stock' => 'required|integer',
             'image' => 'nullable|url',
-            'download_file' => 'nullable|file|mimes:pdf,zip,doc,docx,ppt,pptx,txt|max:20480',
+            'download_file' => 'nullable|file|max:102400', // 100MB max
         ]);
 
         $data = $request->all();
 
-        // Handle file upload
         if ($request->hasFile('download_file')) {
-            // Hapus file lama jika ada
+            // Delete old file if exists
             if ($product->download_file) {
                 Storage::disk('public')->delete($product->download_file);
             }
             
+            // Upload new file
             $file = $request->file('download_file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $path = $file->storeAs('downloads', $fileName, 'public');
             $data['download_file'] = $path;
         } else {
-            // Pertahankan file yang ada jika tidak ada file baru diupload
+            // Keep existing file
             $data['download_file'] = $product->download_file;
         }
 
@@ -99,7 +94,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Hapus file terkait
+        // Delete associated file
         if ($product->download_file) {
             Storage::disk('public')->delete($product->download_file);
         }
@@ -108,31 +103,24 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product deleted successfully!');
     }
 
-    public function showIndexProduct()
-    {
-        return view('products.index');
-    }
-
-    // Method to show delete confirmation
     public function delete($id)
     {
         $product = Product::findOrFail($id);
         return view('products.delete', compact('product'));
     }
 
-    // Method baru untuk download file
     public function download(Product $product)
     {
         if (!$product->download_file) {
-            abort(404, 'File tidak ditemukan');
+            abort(404, 'File not found');
         }
 
         $filePath = storage_path('app/public/' . $product->download_file);
 
         if (!file_exists($filePath)) {
-            abort(404, 'File tidak ditemukan');
+            abort(404, 'File not found');
         }
 
-        return response()->download($filePath);
+        return response()->download($filePath, $product->name . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
 }

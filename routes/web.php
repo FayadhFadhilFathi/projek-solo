@@ -7,7 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\DownloadController; // TAMBAHKAN INI
+use App\Http\Controllers\DownloadController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -23,26 +23,22 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
         Route::post('/product', [ProductController::class, 'store'])->name('product.store');
-
-        // Add the edit route
         Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
-
-        // Add the update route
         Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
-
-        // Add the delete confirmation route
         Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
-
-        // The destroy route for deleting a product
         Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
+        
+        // Admin download route
+        Route::get('/products/{product}/download', [ProductController::class, 'download'])
+             ->name('products.download');
 
-        // Admin dashboard route
+        // Admin dashboard
         Route::get('/admin/dashboard', function () {
             $users = \App\Models\User::all();
             return view('admin.dashboard', compact('users'));
         })->name('admin.dashboard');
 
-        // User management routes
+        // User management
         Route::resource('users', UserController::class);
     });
 
@@ -53,24 +49,22 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::post('/payment/process', [OrderController::class, 'processPayment'])->name('user.payment.process');
         Route::get('/history', [OrderController::class, 'history'])->name('user.order.history');
         Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
-
-        // New remove routes
         Route::delete('/{id}/remove', [OrderController::class, 'remove'])->name('user.order.remove');
         Route::post('/remove-bulk', [OrderController::class, 'removeBulk'])->name('user.order.remove.bulk');
     });
 
-    // CRUD routes for order items
+    // User download route
+    Route::get('/download/{order}', [DownloadController::class, 'download'])
+         ->name('download.file');
+
+    // Order items
     Route::resource('order-items', OrderItemController::class);
 
-    // User dashboard route
+    // User dashboard
     Route::get('/dashboard', function () {
         $products = Product::all();
         return view('user.dashboard', compact('products'));
     })->name('dashboard');
-    
-    // TAMBAHKAN ROUTE DOWNLOAD DI SINI
-    Route::get('/download/{order}', [DownloadController::class, 'download'])
-         ->name('download.file');
 });
 
 // Authentication routes

@@ -56,8 +56,7 @@
                             <i class="fas fa-trash me-1"></i> Delete
                         </a>
                     </div>
-                    
-                    {{-- Tambahkan tombol download --}}
+
                     @if($product->download_file)
                         <div class="mt-2 text-center">
                             <a href="{{ route('products.download', $product->id) }}" class="btn btn-sm btn-success">
@@ -71,7 +70,6 @@
         @endforeach
     </div>
 
-    <!-- Empty state if no products -->
     @if(count($products) == 0)
     <div class="text-center p-5">
         <div class="mb-4">
