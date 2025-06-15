@@ -5,8 +5,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\CartController; // Ensure this line is present
-use App\Http\Controllers\UserController; // Added UserController import
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DownloadController; // TAMBAHKAN INI
 use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -27,13 +28,13 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
 
         // Add the update route
-        Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update'); // Changed to product.update
+        Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
 
         // Add the delete confirmation route
         Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
 
         // The destroy route for deleting a product
-        Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');      
+        Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
 
         // Admin dashboard route
         Route::get('/admin/dashboard', function () {
@@ -52,6 +53,10 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::post('/payment/process', [OrderController::class, 'processPayment'])->name('user.payment.process');
         Route::get('/history', [OrderController::class, 'history'])->name('user.order.history');
         Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
+
+        // New remove routes
+        Route::delete('/{id}/remove', [OrderController::class, 'remove'])->name('user.order.remove');
+        Route::post('/remove-bulk', [OrderController::class, 'removeBulk'])->name('user.order.remove.bulk');
     });
 
     // CRUD routes for order items
@@ -62,6 +67,10 @@ Route::middleware([Authenticate::class])->group(function () {
         $products = Product::all();
         return view('user.dashboard', compact('products'));
     })->name('dashboard');
+    
+    // TAMBAHKAN ROUTE DOWNLOAD DI SINI
+    Route::get('/download/{order}', [DownloadController::class, 'download'])
+         ->name('download.file');
 });
 
 // Authentication routes
@@ -70,4 +79,3 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-

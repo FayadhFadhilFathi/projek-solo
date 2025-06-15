@@ -468,10 +468,10 @@
             <!-- Orders List -->
             <div class="orders-grid" id="ordersGrid">
                 @foreach($orders->whereIn('status', ['paid', 'processing', 'shipped', 'delivered'])->sortByDesc('updated_at') as $order)
-                    <div class="order-card {{ $order->status }}" 
-                         data-status="{{ $order->status }}" 
-                         data-date="{{ $order->updated_at->format('Y-m-d') }}"
-                         data-product="{{ strtolower($order->product->name) }}">
+                    <div class="order-card {{ $order->status }}"
+                        data-status="{{ $order->status }}"
+                        data-date="{{ $order->updated_at->format('Y-m-d') }}"
+                        data-product="{{ strtolower($order->product->name) }}">
                         <div class="order-header">
                             <div class="product-name">
                                 🎮 {{ $order->product->name }}
@@ -498,14 +498,14 @@
                                 <div class="detail-value">#{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}</div>
                             </div>
                         </div>
-                        
+
                         @if($order->status === 'paid')
                             <div class="payment-info">
                                 💳 Payment completed on {{ $order->updated_at->format('M d, Y \a\t H:i') }}
                             </div>
                         @elseif($order->status === 'processing')
                             <div class="payment-info">
-                                📦 Your order is being processed
+                                🛠️ Your order is being processed
                             </div>
                         @elseif($order->status === 'shipped')
                             <div class="payment-info">
@@ -514,6 +514,16 @@
                         @elseif($order->status === 'delivered')
                             <div class="payment-info">
                                 ✅ Order delivered on {{ $order->updated_at->format('M d, Y') }}
+                            </div>
+                        @endif
+                        
+                        {{-- TOMBOL DOWNLOAD --}}
+                        @if($order->isPaid() && $order->product->download_file)
+                            <div class="mt-3 text-center">
+                                <a href="{{ route('download.file', $order->id) }}" 
+                                class="btn btn-success btn-sm">
+                                    <i class="fas fa-download me-1"></i> Download File
+                                </a>
                             </div>
                         @endif
                     </div>

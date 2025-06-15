@@ -68,6 +68,115 @@ class OrderController extends Controller
                         ->with('success', 'Order placed successfully!');
     }
 
+    /**
+     * Remove a pending order (cart item)
+     */
+    public function remove(Request $request, $id)
+    {
+        try {
+            // Find the order that belongs to the authenticated user and is pending
+            $order = Order::where('id', $id)
+                         ->where('user_id', Auth::id())
+                         ->where('status', 'pending')
+                         ->with('product')
+                         ->first();
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found or cannot be removed.'
+                ], 404);
+            }
+
+            $productName = $order->product->name;
+            $order->delete();
+
+            // Return JSON response for AJAX requests
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "'{$productName}' has been removed from your cart."
+                ]);
+            }
+
+            // Return redirect for regular requests
+            return redirect()->route('user.order.index')
+                           ->with('success', "'{$productName}' has been removed from your cart.");
+
+        } catch (Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to remove item: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('user.order.index')
+                           ->with('error', 'Failed to remove item: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove multiple pending orders (bulk remove)
+     */
+    public function removeBulk(Request $request)
+    {
+        $request->validate([
+            'order_ids' => 'required|array',
+            'order_ids.*' => 'exists:orders,id'
+        ]);
+
+        try {
+            $orderIds = $request->order_ids;
+
+            // Get orders that belong to the authenticated user and are pending
+            $orders = Order::whereIn('id', $orderIds)
+                          ->where('user_id', Auth::id())
+                          ->where('status', 'pending')
+                          ->with('product')
+                          ->get();
+
+            if ($orders->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No valid pending orders found to remove.'
+                ], 404);
+            }
+
+            $removedCount = $orders->count();
+            $productNames = $orders->pluck('product.name')->toArray();
+
+            // Delete the orders
+            Order::whereIn('id', $orders->pluck('id'))->delete();
+
+            $message = $removedCount === 1 
+                ? "'{$productNames[0]}' has been removed from your cart."
+                : "{$removedCount} items have been removed from your cart.";
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'removed_count' => $removedCount
+                ]);
+            }
+
+            return redirect()->route('user.order.index')
+                           ->with('success', $message);
+
+        } catch (Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to remove items: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()->route('user.order.index')
+                           ->with('error', 'Failed to remove items: ' . $e->getMessage());
+        }
+    }
+
     public function processPayment(Request $request)
     {
         $request->validate([
@@ -95,7 +204,7 @@ class OrderController extends Controller
             // Validate stock availability for all orders
             foreach ($orders as $order) {
                 $product = $order->product;
-                
+
                 if (!$product->hasStock($order->quantity)) {
                     throw new Exception("Stock tidak mencukupi untuk {$product->name}. Stock tersedia: {$product->stock}, diminta: {$order->quantity}");
                 }
@@ -127,7 +236,7 @@ class OrderController extends Controller
         } catch (Exception $e) {
             // Rollback the transaction on any error
             DB::rollback();
-            
+
             return redirect()->route('user.order.index')
                            ->with('error', 'Payment failed: ' . $e->getMessage());
         }

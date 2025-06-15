@@ -51,11 +51,20 @@
                         <a href="{{ route('product.edit', $product->id) }}" class="btn btn-warning">
                             <i class="fas fa-edit me-1"></i> Edit
                         </a>
-                        <a href="{{ route('product.delete', $product->id) }}" class="btn btn-danger" 
-                           onclick="return confirm('Are you sure you want to delete this product?')">
+                        <a href="{{ route('product.delete', $product->id) }}" class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want to delete this product?')">
                             <i class="fas fa-trash me-1"></i> Delete
                         </a>
                     </div>
+                    
+                    {{-- Tambahkan tombol download --}}
+                    @if($product->download_file)
+                        <div class="mt-2 text-center">
+                            <a href="{{ route('products.download', $product->id) }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-download me-1"></i> Download File
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

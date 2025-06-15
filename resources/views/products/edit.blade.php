@@ -21,7 +21,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('product.update', $product->id) }}" method="POST">
+                    <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         
@@ -86,6 +86,24 @@
                             <img src="{{ $product->image }}" alt="{{ $product->name }}" class="img-thumbnail" style="max-height: 200px;">
                         </div>
                         @endif
+                        <div class="mb-4">
+                            <label for="download_file" class="form-label">Downloadable File</label>
+                            <input type="file" class="form-control @error('download_file') is-invalid @enderror"
+                                id="download_file" name="download_file">
+                            @error('download_file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Upload file (PDF, ZIP, DOC, DOCX, PPT, PPTX, TXT) max 20MB</div>
+
+                            @if ($product->download_file)
+                                <div class="mt-2">
+                                    Current file: 
+                                    <a href="{{ route('products.download', $product->id) }}" target="_blank">
+                                        {{ basename($product->download_file) }}
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="{{ route('products.index') }}" class="btn btn-secondary me-md-2">Cancel</a>

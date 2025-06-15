@@ -21,7 +21,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('product.store') }}" method="POST">
+                    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="name" class="form-label">Product Name</label>
@@ -77,7 +77,15 @@
                             @enderror
                             <div class="form-text">Enter a URL for the product image</div>
                         </div>
-                        
+                        <div class="mb-4">
+                            <label for="download_file" class="form-label">Downloadable File</label>
+                            <input type="file" class="form-control @error('download_file') is-invalid @enderror"
+                                id="download_file" name="download_file">
+                            @error('download_file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Upload file (PDF, ZIP, DOC, DOCX, PPT, PPTX, TXT) max 20MB</div>
+                        </div>
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="{{ route('products.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
                             <button type="submit" class="btn btn-success">

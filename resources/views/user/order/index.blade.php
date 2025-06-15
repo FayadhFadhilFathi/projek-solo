@@ -99,7 +99,7 @@
         flex-wrap: wrap;
     }
 
-    .select-all-btn, .pay-now-btn {
+    .select-all-btn, .pay-now-btn, .remove-selected-btn {
         padding: 12px 24px;
         border: none;
         border-radius: 25px;
@@ -136,6 +136,24 @@
     }
 
     .pay-now-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .remove-selected-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    .remove-selected-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .remove-selected-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         transform: none;
@@ -186,6 +204,34 @@
         transform: scale(1.2);
     }
 
+    .order-actions {
+        position: absolute;
+        top: 20px;
+        right: 60px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .remove-btn {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .remove-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+
     .order-header {
         display: flex;
         justify-content: space-between;
@@ -193,7 +239,7 @@
         margin-bottom: 15px;
         flex-wrap: wrap;
         gap: 10px;
-        padding-right: 40px;
+        padding-right: 120px;
     }
 
     .product-name {
@@ -365,16 +411,14 @@
     }
 
     /* Success Notification Styles */
-    .success-notification {
+    .success-notification, .error-notification {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: linear-gradient(135deg, #00b894, #00cec9);
-        color: white;
         padding: 15px 20px;
         border-radius: 10px;
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 99999; /* Sangat tinggi untuk memastikan di atas navbar */
+        z-index: 99999;
         animation: slideInRight 0.5s ease-out;
         font-weight: 500;
         display: flex;
@@ -384,8 +428,54 @@
         word-wrap: break-word;
     }
 
-    .success-notification.slide-out {
+    .success-notification {
+        background: linear-gradient(135deg, #00b894, #00cec9);
+        color: white;
+    }
+
+    .error-notification {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    .success-notification.slide-out, .error-notification.slide-out {
         animation: slideOutRight 0.5s ease-out;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99998;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .loading-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     @keyframes fadeInUp {
@@ -422,24 +512,24 @@
     }
 
     @keyframes slideInRight {
-        from { 
-            transform: translateX(100%); 
-            opacity: 0; 
+        from {
+            transform: translateX(100%);
+            opacity: 0;
         }
-        to { 
-            transform: translateX(0); 
-            opacity: 1; 
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
     }
 
     @keyframes slideOutRight {
-        from { 
-            transform: translateX(0); 
-            opacity: 1; 
+        from {
+            transform: translateX(0);
+            opacity: 1;
         }
-        to { 
-            transform: translateX(100%); 
-            opacity: 0; 
+        to {
+            transform: translateX(100%);
+            opacity: 0;
         }
     }
 
@@ -464,6 +554,17 @@
         .order-header {
             flex-direction: column;
             align-items: flex-start;
+            padding-right: 60px;
+        }
+
+        .order-actions {
+            right: 10px;
+            top: 10px;
+        }
+
+        .order-checkbox {
+            right: 10px;
+            top: 50px;
         }
 
         .payment-controls {
@@ -474,8 +575,7 @@
             flex-direction: column;
         }
 
-        /* Mobile notification adjustment */
-        .success-notification {
+        .success-notification, .error-notification {
             top: 10px;
             right: 10px;
             left: 10px;
@@ -487,7 +587,7 @@
 
 <div class="orders-page">
     <div class="orders-header">
-        <h1>🛍️ My Orders</h1>
+        <h1>🛒 My Orders</h1>
         <p>Track your purchases and order history</p>
     </div>
 
@@ -537,6 +637,9 @@
                     <button type="button" class="pay-now-btn" id="payNowBtn" onclick="proceedToPayment()" disabled>
                         💰 Pay Now
                     </button>
+                    <button type="button" class="remove-selected-btn" id="removeSelectedBtn" onclick="removeSelectedItems()" disabled>
+                        🗑️ Remove Selected
+                    </button>
                 </div>
             </div>
 
@@ -544,6 +647,11 @@
             <div class="orders-grid">
                 @foreach($orders->where('status', 'pending') as $order)
                     <div class="order-card" data-order-id="{{ $order->id }}" data-price="{{ $order->total_price }}">
+                        <div class="order-actions">
+                            <button class="remove-btn" onclick="removeItem({{ $order->id }}, '{{ $order->product->name }}')">
+                                ❌ Remove
+                            </button>
+                        </div>
                         @if($order->status === 'pending')
                             <input type="checkbox" class="order-checkbox" onchange="updateSelection()" data-price="{{ $order->total_price }}">
                         @endif
@@ -573,6 +681,16 @@
                                 <div class="detail-value">#{{ str_pad($order->id, 3, '0', STR_PAD_LEFT) }}</div>
                             </div>
                         </div>
+                        
+                        {{-- TOMBOL DOWNLOAD --}}
+                        @if($order->isPaid() && $order->product->download_file)
+                            <div class="mt-3 text-center">
+                                <a href="{{ route('download.file', $order->id) }}" 
+                                class="btn btn-success btn-sm">
+                                    <i class="fas fa-download me-1"></i> Download File
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -596,6 +714,11 @@
     </div>
 </div>
 
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
 <script>
 let selectedOrders = [];
 
@@ -603,21 +726,22 @@ function updateSelection() {
     const checkboxes = document.querySelectorAll('.order-checkbox:checked');
     const totalElement = document.getElementById('selectedTotal');
     const payBtn = document.getElementById('payNowBtn');
-    
+    const removeBtn = document.getElementById('removeSelectedBtn');
+
     selectedOrders = [];
     let total = 0;
-    
+
     checkboxes.forEach(checkbox => {
         const orderCard = checkbox.closest('.order-card');
         const orderId = orderCard.dataset.orderId;
         const price = parseFloat(orderCard.dataset.price);
-        
+
         selectedOrders.push(orderId);
         total += price;
-        
+
         orderCard.classList.add('selected');
     });
-    
+
     // Remove selected class from unchecked cards
     document.querySelectorAll('.order-card').forEach(card => {
         const checkbox = card.querySelector('.order-checkbox');
@@ -625,40 +749,44 @@ function updateSelection() {
             card.classList.remove('selected');
         }
     });
-    
+
     totalElement.textContent = total.toFixed(2);
     payBtn.disabled = selectedOrders.length === 0;
+    removeBtn.disabled = selectedOrders.length === 0;
 }
 
 function toggleSelectAll() {
     const checkboxes = document.querySelectorAll('.order-checkbox');
     const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-    
+
     checkboxes.forEach(checkbox => {
         checkbox.checked = !allChecked;
     });
-    
+
     updateSelection();
 }
 
 function proceedToPayment() {
     if (selectedOrders.length === 0) {
-        alert('Please select at least one order to pay.');
+        showErrorNotification('Please select at least one order to pay.');
         return;
     }
-    
+
+    // Show loading
+    showLoading();
+
     // Create form and submit
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '{{ route("user.payment.process") }}';
-    
+
     // Add CSRF token
     const csrfToken = document.createElement('input');
     csrfToken.type = 'hidden';
     csrfToken.name = '_token';
     csrfToken.value = '{{ csrf_token() }}';
     form.appendChild(csrfToken);
-    
+
     // Add selected orders
     selectedOrders.forEach(orderId => {
         const input = document.createElement('input');
@@ -667,9 +795,91 @@ function proceedToPayment() {
         input.value = orderId;
         form.appendChild(input);
     });
-    
+
     document.body.appendChild(form);
     form.submit();
+}
+
+function removeItem(orderId, productName) {
+    if (!confirm(`Are you sure you want to remove "${productName}" from your cart?`)) {
+        return;
+    }
+
+    showLoading();
+
+    // Create form for DELETE request
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/user/order/${orderId}/remove`;
+
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+
+    // Add method spoofing for DELETE
+    const methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'DELETE';
+    form.appendChild(methodInput);
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function removeSelectedItems() {
+    if (selectedOrders.length === 0) {
+        showErrorNotification('Please select at least one order to remove.');
+        return;
+    }
+
+    const count = selectedOrders.length;
+    const message = count === 1 
+        ? 'Are you sure you want to remove the selected item from your cart?' 
+        : `Are you sure you want to remove ${count} selected items from your cart?`;
+
+    if (!confirm(message)) {
+        return;
+    }
+
+    showLoading();
+
+    // Create form for bulk remove
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("user.order.remove.bulk") }}';
+
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+
+    // Add selected orders
+    selectedOrders.forEach(orderId => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'order_ids[]';
+        input.value = orderId;
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function showLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
+}
+
+function hideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.remove('show');
 }
 
 // Function untuk menampilkan notifikasi sukses
@@ -677,9 +887,9 @@ function showSuccessNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'success-notification';
     notification.innerHTML = `✅ ${message}`;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto remove setelah 4 detik
     setTimeout(() => {
         notification.classList.add('slide-out');
@@ -689,7 +899,7 @@ function showSuccessNotification(message) {
             }
         }, 500);
     }, 4000);
-    
+
     // Click to dismiss
     notification.addEventListener('click', () => {
         notification.classList.add('slide-out');
@@ -700,13 +910,54 @@ function showSuccessNotification(message) {
         }, 500);
     });
 }
+
+// Function untuk menampilkan notifikasi error
+function showErrorNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'error-notification';
+    notification.innerHTML = `❌ ${message}`;
+
+    document.body.appendChild(notification);
+
+    // Auto remove setelah 4 detik
+    setTimeout(() => {
+        notification.classList.add('slide-out');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500);
+    }, 4000);
+
+    // Click to dismiss
+    notification.addEventListener('click', () => {
+        notification.classList.add('slide-out');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500);
+    });
+}
+
+// Hide loading on page load
+window.addEventListener('load', function() {
+    hideLoading();
+});
 </script>
 
 @if(session('success'))
     <script>
-        // Tunggu sampai halaman selesai load
         document.addEventListener('DOMContentLoaded', function() {
             showSuccessNotification('{{ session('success') }}');
+        });
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showErrorNotification('{{ session('error') }}');
         });
     </script>
 @endif
