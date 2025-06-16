@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Project Store')</title>
+    <title>@yield('title', 'VOIDGame')</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -241,7 +241,7 @@
     <div class="container-fluid px-4">
         <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
             <i class="bi bi-shop me-2"></i>
-            <span class="fw-bold">Project Store</span>
+            <span class="fw-bold">VOIDGame</span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -464,7 +464,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5 class="mb-3">Project Store</h5>
+                    <h5 class="mb-3">VOIDGame</h5>
                     <p class="mb-2">Your trusted online store for quality products.</p>
                     <div class="d-flex">
                         <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
@@ -497,7 +497,7 @@
             <hr class="my-4">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; 2025 Project Store. All rights reserved.</p>
+                    <p class="mb-0">&copy; 2025 VOIDGame. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <small class="text-white-50">Built with ❤️ using Laravel & Bootstrap</small>

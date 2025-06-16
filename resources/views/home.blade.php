@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-12 text-center hero-content">
                     <div class="mb-4">
-                        <h1 class="display-1 fw-bold text-primary-custom mb-3">PROJECT STORE</h1>
+                        <h1 class="display-1 fw-bold text-primary-custom mb-3">VOIDGame</h1>
                         <div class="hero-icon mb-4">
                             <i class="bi bi-android2 display-2 text-warning"></i>
                             <i class="bi bi-xbox display-2 text-info mx-3"></i>
@@ -40,7 +40,7 @@
     <div class="container">
         <div class="row py-5">
             <div class="col-12 text-center">
-                <h2 class="display-5 fw-bold text-primary mb-3">Selamat Datang di Project Store</h2>
+                <h2 class="display-5 fw-bold text-primary mb-3">Selamat Datang di VOIDGame</h2>
                 <p class="lead text-muted">Kami menyediakan berbagai Game dan Console berkualitas tinggi untuk kebutuhan Anda!</p>
             </div>
         </div>
