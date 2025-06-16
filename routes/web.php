@@ -37,6 +37,7 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
         Route::get('/product/{id}/delete', [ProductController::class, 'delete'])->name('product.delete');
         Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
+        Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 
         // Admin download route
         Route::get('/products/{product}/download', [ProductController::class, 'download'])

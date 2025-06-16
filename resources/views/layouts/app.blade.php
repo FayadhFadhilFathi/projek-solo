@@ -253,20 +253,20 @@
             <ul class="navbar-nav me-auto">
                 <!-- Home -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">
+                    <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">
                         <i class="bi bi-house-door me-1"></i>Home
                     </a>
                 </li>
 
                 <!-- Products Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('products.*') ? 'active' : '' }}" 
+                    <a class="nav-link dropdown-toggle {{ request()->is('products*') ? 'active' : '' }}"
                        href="#" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-box-seam me-1"></i>Products
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{{ route('dashboard') }}">
                                 <i class="bi bi-collection me-2"></i>All Products
                             </a>
                         </li>
@@ -286,7 +286,7 @@
 
                 <!-- Special Offers -->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link {{ request()->is('offers*') ? 'active' : '' }}" href="#">
                         <i class="bi bi-percent me-1"></i>Special Offers
                     </a>
                 </li>
@@ -295,15 +295,15 @@
                     @if (auth()->user()->role === 'admin')
                         <!-- Admin Dashboard Link -->
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
-                               href="{{ route('products.index') }}">
+                            <a class="nav-link {{ request()->is('admin*') ? 'active' : '' }}"
+                               href="{{ route('admin.dashboard') }}">
                                 <i class="bi bi-speedometer2 me-1"></i>Admin Panel
                             </a>
                         </li>
                     @else
                         <!-- My Orders -->
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('user.order.*') ? 'active' : '' }}"
+                            <a class="nav-link {{ request()->is('user/order*') ? 'active' : '' }}"
                                href="{{ route('user.order.index') }}">
                                 <i class="bi bi-bag me-1"></i>My Orders
                             </a>
@@ -315,9 +315,9 @@
             <ul class="navbar-nav">
                 <!-- Search Bar -->
                 <li class="nav-item me-2">
-                    <form class="d-flex">
+                    <form class="d-flex" action="{{ route('products.search') }}" method="GET">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+                            <input type="text" class="form-control" name="query" placeholder="Search products..." value="{{ request('query') }}">
                             <button class="btn btn-light" type="submit">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -325,13 +325,26 @@
                     </form>
                 </li>
 
-                <!-- Cart -->
+                <!-- Cart with Dynamic Count -->
+                @php
+                    $cartCount = 0;
+                    if(auth()->check()) {
+                        // Tambahkan pengecekan method_exists
+                        if(method_exists(auth()->user(), 'cartItems')) {
+                            $cartCount = auth()->user()->cartItems()->count();
+                        }
+                    } elseif(session()->has('cart')) {
+                        $cartCount = count(session('cart'));
+                    }
+                @endphp
                 <li class="nav-item me-2">
-                    <a class="nav-link position-relative" href="#">
+                    <a class="nav-link position-relative" href="{{ auth()->check() ? route('user.order.index') : route('login') }}">
                         <i class="bi bi-cart3"></i>
+                        @if($cartCount > 0)
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
+                            {{ $cartCount }}
                         </span>
+                        @endif
                     </a>
                 </li>
 
@@ -345,42 +358,49 @@
                             </div>
                             {{ auth()->user()->name }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-person me-2"></i>Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-heart me-2"></i>Wishlist
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <i class="bi bi-gear me-2"></i>Settings
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-person me-2"></i>Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-heart me-2"></i>Wishlist
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-gear me-2"></i>Settings
+                                    </a>
+                                </li>
+                                @if(auth()->user()->role === 'admin')
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-2"></i>Admin Dashboard
+                                    </a>
+                                </li>
+                                @endif
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                     </li>
                 @else
                     <!-- Login/Register -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">
+                        <a class="nav-link {{ request()->is('login') ? 'active' : '' }}" href="{{ route('login') }}">
                             <i class="bi bi-box-arrow-in-right me-1"></i>Login
                         </a>
                     </li>
                     <li class="nav-item ms-2">
-                        <a class="btn btn-outline-light" href="{{ route('register') }}">
+                        <a class="btn btn-outline-light {{ request()->is('register') ? 'active' : '' }}" href="{{ route('register') }}">
                             <i class="bi bi-person-plus me-1"></i>Register
                         </a>
                     </li>

@@ -123,4 +123,15 @@ class ProductController extends Controller
 
         return response()->download($filePath, $product->name . '.' . pathinfo($filePath, PATHINFO_EXTENSION));
     }
+
+    public function search(Request $request)
+{
+    $query = $request->input('query');
+    
+    $products = Product::where('name', 'like', "%$query%")
+        ->orWhere('description', 'like', "%$query%")
+        ->get();
+        
+    return view('products.index', compact('products'));
+}
 }
