@@ -452,8 +452,8 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-tags me-2"></i>Categories
+                            <a class="dropdown-item" href="{{ route('categories.index') }}" target="_blank">
+                                <i class="bi bi-eye me-2"></i>View Public Categories
                             </a>
                         </li>
                     </ul>
@@ -502,6 +502,26 @@
                         <i class="bi bi-graph-up"></i>
                         Analytics
                     </a>
+                </li>
+                <!-- Categories -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                    href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-tags"></i>
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('admin.categories.index') }}">
+                                <i class="bi bi-list-ul me-2"></i>Manage Categories
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('categories.index') }}" target="_blank">
+                                <i class="bi bi-eye me-2"></i>View Public Categories
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             

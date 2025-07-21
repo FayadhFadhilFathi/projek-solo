@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
+use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
@@ -22,7 +25,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        return view('products.create');
+        $categories = Category::all();
+        $types = collect(); // Empty collection for initial load
+        
+        return view('products.create', compact('categories', 'types'));
     }
 
     public function store(Request $request)
@@ -34,6 +40,8 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'image' => 'nullable|url',
             'download_file' => 'nullable|file|max:102400', // 100MB max
+            'category_id' => 'required|exists:categories,id',
+            'type_id' => 'required|exists:types,id',
         ]);
 
         $data = $request->all();
@@ -56,7 +64,10 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = Category::all();
+        $types = Type::where('category_id', $product->category_id)->get();
+        
+        return view('products.edit', compact('product', 'categories', 'types'));
     }
 
     public function update(Request $request, Product $product)
@@ -68,6 +79,8 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'image' => 'nullable|url',
             'download_file' => 'nullable|file|max:102400', // 100MB max
+            'category_id' => 'required|exists:categories,id',
+            'type_id' => 'required|exists:types,id',
         ]);
 
         $data = $request->all();
@@ -133,5 +146,10 @@ class ProductController extends Controller
         ->get();
         
     return view('products.index', compact('products'));
+}
+public function getTypesByCategory($categoryId)
+{
+    $types = Type::where('category_id', $categoryId)->get();
+    return response()->json($types);
 }
 }

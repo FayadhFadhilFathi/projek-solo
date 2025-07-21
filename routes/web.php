@@ -12,12 +12,17 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Models\Product;
 use Illuminate\Auth\Middleware\Authenticate;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ReviewController; // Tambahkan ini
-use App\Http\Controllers\AdminReviewController; // Tambahkan ini
-use App\Http\Controllers\AnalyticsController; // Tambahkan ini
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminReviewController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TypeController;
 
 // Home route
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Public product show route (MUST be public)
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -25,6 +30,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Public category routes
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/categories/{category}/type/{type}', [CategoryController::class, 'type'])
+     ->name('categories.type');
 
 // Routes that require authentication
 Route::middleware([Authenticate::class])->group(function () {
@@ -45,18 +56,41 @@ Route::middleware([Authenticate::class])->group(function () {
 
         // Admin dashboard
         Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard'); // Hanya tampilkan dashboard navigasi
+            return view('admin.dashboard');
         })->name('admin.dashboard');
+        // Add this with the other admin routes
+        Route::get('/admin/categories', [CategoryController::class, 'adminIndex'])
+            ->name('admin.categories.index');
 
+        // API route to get types by category
+        Route::get('/api/categories/{category}/types', [ProductController::class, 'getTypesByCategory'])
+     ->name('api.categories.types');
+
+        // Type management routes
+        Route::prefix('categories/{category}/types')->group(function () {
+            Route::get('/', [TypeController::class, 'index'])->name('categories.types.index');
+            Route::get('/create', [TypeController::class, 'create'])->name('categories.types.create');
+            Route::post('/', [TypeController::class, 'store'])->name('categories.types.store');
+            Route::get('/{type}/edit', [TypeController::class, 'edit'])->name('categories.types.edit');
+            Route::put('/{type}', [TypeController::class, 'update'])->name('categories.types.update');
+            Route::delete('/{type}', [TypeController::class, 'destroy'])->name('categories.types.destroy');
+        });
         // User management
         Route::resource('users', UserController::class);
 
         // Review management
         Route::get('/reviews', [AdminReviewController::class, 'index'])->name('admin.reviews.index');
         Route::put('/reviews/{review}', [AdminReviewController::class, 'update'])->name('admin.reviews.update');
-        
+
         // Analytics dashboard
         Route::get('/analytics', [AnalyticsController::class, 'dashboard'])->name('admin.analytics.dashboard');
+
+        // Admin category management routes
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     });
 
     // User order routes
@@ -68,9 +102,8 @@ Route::middleware([Authenticate::class])->group(function () {
         Route::post('/', [OrderController::class, 'store'])->name('user.order.store');
         Route::delete('/{id}/remove', [OrderController::class, 'remove'])->name('user.order.remove');
         Route::post('/remove-bulk', [OrderController::class, 'removeBulk'])->name('user.order.remove.bulk');
-        Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-        
-        // User review routes - tambahkan di sini
+
+        // User review routes
         Route::post('/{order}/review', [ReviewController::class, 'store'])->name('user.review.store');
     });
 

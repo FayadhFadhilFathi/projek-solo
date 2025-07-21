@@ -68,7 +68,39 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category</label>
+                            <select class="form-select @error('category_id') is-invalid @enderror"
+                                    id="category_id" name="category_id" required>
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id', $product->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="type_id" class="form-label">Type</label>
+                            <select class="form-select @error('type_id') is-invalid @enderror"
+                                    id="type_id" name="type_id" required>
+                                <option value="">Select Type</option>
+                                @foreach($types as $type)
+                                    <option value="{{ $type->id }}"
+                                        {{ old('type_id', $product->type_id ?? '') == $type->id ? 'selected' : '' }}>
+                                        {{ $type->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('type_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>               
                         <div class="mb-4">
                             <label for="image" class="form-label">Image URL</label>
                             <input type="url" class="form-control @error('image') is-invalid @enderror" 

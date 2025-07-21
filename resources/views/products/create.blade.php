@@ -40,7 +40,43 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+                        <!-- Category Selection -->
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category</label>
+                            <select class="form-select @error('category_id') is-invalid @enderror" 
+                                    id="category_id" name="category_id" required>
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('category_id', $product->category_id ?? '') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Type Selection -->
+                        <div class="mb-3">
+                            <label for="type_id" class="form-label">Type</label>
+                            <select class="form-select @error('type_id') is-invalid @enderror" 
+                                    id="type_id" name="type_id" required>
+                                <option value="">Select Type</option>
+                                @if(isset($types))
+                                    @foreach($types as $type)
+                                        <option value="{{ $type->id }}" 
+                                            {{ old('type_id', $product->type_id ?? '') == $type->id ? 'selected' : '' }}>
+                                            {{ $type->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('type_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -66,7 +102,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+                                                        
                         <div class="mb-4">
                             <label for="image" class="form-label">Image URL</label>
                             <input type="url" class="form-control @error('image') is-invalid @enderror" 
@@ -99,3 +135,34 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('category_id');
+    const typeSelect = document.getElementById('type_id');
+    
+    categorySelect.addEventListener('change', function() {
+        const categoryId = this.value;
+        typeSelect.innerHTML = '<option value="">Select Type</option>';
+        
+        if (categoryId) {
+            fetch(`/api/categories/${categoryId}/types`)
+                .then(response => response.json())
+                .then(types => {
+                    types.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.id;
+                        option.textContent = type.name;
+                        typeSelect.appendChild(option);
+                    });
+                });
+        }
+    });
+    
+    // Trigger change event if category is pre-selected (for edit form)
+    if (categorySelect.value) {
+        categorySelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+@endpush

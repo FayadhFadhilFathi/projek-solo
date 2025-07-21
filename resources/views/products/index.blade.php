@@ -53,6 +53,12 @@
                         <li class="list-group-item bg-transparent">
                             <strong>Stock:</strong> {{ $product->stock }}
                         </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>Category:</strong> {{ $product->category->name ?? 'N/A' }}
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <strong>Type:</strong> {{ $product->type->name ?? 'N/A' }}
+                        </li>
                     </ul>
                 </div>
                 <div class="card-footer bg-transparent">

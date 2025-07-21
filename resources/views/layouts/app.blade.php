@@ -271,8 +271,8 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-tags me-2"></i>Categories
+                            <a class="dropdown-item" href="{{ route('categories.index') }}" target="_blank">
+                                <i class="bi bi-eye me-2"></i>Categories
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>

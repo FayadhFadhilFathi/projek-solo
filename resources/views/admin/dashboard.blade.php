@@ -66,6 +66,38 @@
                 </div>
             </div>
         </div>
+        <!-- Categories Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card nav-card bg-gradient-categories">
+                <div class="card-body text-center p-4">
+                    <div class="nav-icon mb-3">
+                        <i class="fas fa-list fa-3x"></i>
+                    </div>
+                    <h3 class="card-title mb-3">Category Management</h3>
+                    <p class="card-text mb-4">Manage product categories</p>
+                    <a href="{{ route('admin.categories.index') }}" class="btn btn-light btn-rounded">
+                        Go to Categories <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Types Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card nav-card bg-gradient-categories">
+                <div class="card-body text-center p-4">
+                    <div class="nav-icon mb-3">
+                        <i class="fas fa-list fa-3x"></i>
+                    </div>
+                    <h3 class="card-title mb-3">Category Management</h3>
+                    <p class="card-text mb-4">Manage product categories and types</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ route('admin.categories.index') }}" class="btn btn-light btn-rounded">
+                            Categories <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Analytics Card -->
         <div class="col-lg-4 col-md-6">
@@ -141,6 +173,9 @@
     font-weight: 500;
     border: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.bg-gradient-categories {
+    background: linear-gradient(135deg, #17a2b8, #2fc5d8);
 }
 </style>
 @endsection

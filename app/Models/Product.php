@@ -10,7 +10,37 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'stock', 'image', 'download_file'];
+    protected $fillable = [
+            'name', 'description', 'price', 'stock', 'image', 'download_file',
+            'category_id', 'type_id' // Tambahkan ini
+        ];  
+
+        public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+    // Scope untuk filter berdasarkan kategori
+    public function scopeByCategory($query, $categorySlug)
+    {
+        return $query->whereHas('category', function ($q) use ($categorySlug) {
+            $q->where('slug', $categorySlug);
+        });
+    }
+
+    // Scope untuk filter berdasarkan type
+    public function scopeByType($query, $typeSlug)
+    {
+        return $query->whereHas('type', function ($q) use ($typeSlug) {
+            $q->where('slug', $typeSlug);
+        });
+    }
+
 
     // Relationship with order items
     public function orderItems()
